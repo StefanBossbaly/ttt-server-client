@@ -16,5 +16,10 @@ int main()
 
 	printf("Socket ID: %i\n", server.socket_id);
 
+	while(1)
+	{
+		server_handle(&server);
+	}
+
 	return 0;
 }
