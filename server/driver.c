@@ -4,70 +4,58 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include <string.h>
+#include <unistd.h>
 
 #define HOST "localhost\0"
 #define PORT 8080
 #define BACKLOG 10
-#define NUM_THREADS	5
-
-void *thread_server_do_work(void *uncast_subserver)
-{
-	printf("Thread created!\n");
-
-	subserver_t *subserver = (subserver_t *) uncast_subserver;
-	chatserver_t *chatserver = (chatserver_t *) malloc(sizeof(chatserver_t));
-
-	chatserver_init(chatserver, subserver);
-
-	while (1)
-	{
-		chatserver_handle(chatserver);
-	}
-
-	return NULL;
-}
 
 int main()
 {
-	//Create server thread and subserver threads
-	pthread_t subserver_threads[NUM_THREADS];
-	int i = 0;
-	pthread_attr_t attr;
-
-	/* Initialize and set thread detached attribute */
-	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-
-	//Create a server and start listening
-	server_t server;
-	server_init(&server, "127.0.0.1", 3700, 10);
-	server_start(&server);
-
-	while (1)
+	if (fork() == 0)
 	{
-		server_handle(&server);
+		server_t *chatserver = (server_t *) malloc(sizeof(server_t));
+		server_init(chatserver, "127.0.0.1", 3701, 10);
+		server_start(chatserver);
 
-		if (server.client_size == 2)
+		while (1)
 		{
-			printf("Creating thread!\n");
+			server_handle(chatserver);
 
-			subserver_t *subserver = (subserver_t *) malloc(sizeof(subserver_t));
-
-			subserver_init(subserver, server.clients, 2);
-
-			int resultCode = pthread_create(&subserver_threads[i], &attr, thread_server_do_work, subserver);
-
-			if (resultCode)
+			if (chatserver->client_size == 2)
 			{
-				printf("ERROR; return code from pthread_create() is %d\n", resultCode);
-				exit(-1);
-			}
+				subserver_t *subserver = (subserver_t *) malloc(sizeof(subserver_t));
 
-			//Create a new thread
-			server.client_size = 0;
-			i++;
+				subserver_init(subserver, chatserver->clients, chatserver->client_size);
+
+				if (fork() == 0)
+				{
+					chatserver_t *chatserver = (chatserver_t *) malloc(sizeof(chatserver_t));
+
+					chatserver_init(chatserver, subserver);
+
+					while (1)
+					{
+						chatserver_handle(chatserver);
+					}
+				}
+				else
+				{
+					chatserver->client_size = 0;
+				}
+			}
+		}
+	}
+	else
+	{
+		server_t *gameserver = (server_t *) malloc(sizeof(server_t));
+		server_init(gameserver, "127.0.0.1", 3700, 10);
+		server_start(gameserver);
+
+		while (1)
+		{
+			server_handle(gameserver);
 		}
 	}
 
