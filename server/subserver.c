@@ -30,6 +30,12 @@ void subserver_init(subserver_t *subserver, int *clients, int size)
 	subserver->clients_size = size;
 }
 
+void subserver_reg_handler(subserver_t *subserver, int (*handle_recieve)(void *subserver, int id, char *buf, size_t size), void *data)
+{
+	subserver->handle_recieve = handle_recieve;
+	subserver->data = data;
+}
+
 int subserver_max_fd(subserver_t *subserver)
 {
 	int max = -1;
@@ -73,23 +79,7 @@ void subserver_handle(subserver_t *subserver)
 			int nbytes = recv(subserver->clients[i], buffer, sizeof(buffer), 0);
 
 			//Call the handler
-			//subserver->handle_recieve(subserver->clients[i], buffer, sizeof(buffer));
-
-			int j;
-			for (j = 0; j < subserver->clients_size; j++)
-			{
-				// send to everyone!
-				if (FD_ISSET(subserver->clients[j], &subserver->master))
-				{
-					// except the listener and ourselves
-					if (send(subserver->clients[j], buffer, nbytes, 0) == -1)
-					{
-						perror("send");
-					}
-				}
-
-				printf("This was received: %s\n", buffer);
-			}
+			subserver->handle_recieve(subserver->data, subserver->clients[i], buffer, sizeof(buffer));
 		}
 	}
 }

@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 
 void server_init(server_t *server, char *host, int port, int backlog)
 {
@@ -179,17 +180,19 @@ void print_ip(struct addrinfo *ai)
 	}
 }
 
-void *get_in_addr(struct sockaddr * sa)
+void *get_in_addr(struct sockaddr *sa)
 {
 	if (sa->sa_family == AF_INET)
 	{
 		printf("ipv4\n");
-		return &(((struct sockaddr_in *) sa)->sin_addr);
+		struct sockaddr_in *ipv4 = ((struct sockaddr_in *) sa);
+		return &(ipv4->sin_addr);
 	}
 	else
 	{
 		printf("ipv6\n");
-		return &(((struct sockaddr_in6 *) sa)->sin6_addr);
+		struct sockaddr_in6 *ipv6 = ((struct sockaddr_in6 *) sa);
+		return &(ipv6->sin6_addr);
 	}
 }
 
