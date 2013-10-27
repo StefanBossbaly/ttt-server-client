@@ -19,10 +19,8 @@ void server_init(server_t *server, char *host, int port, int backlog)
 	server->port = port;
 	server->backlog = backlog;
 	server->client_size = 0;
-	server->fdmax = 0;
 
 	FD_ZERO(&server->master);    // clear the master and temp sets
-	FD_ZERO(&server->read_fds);
 }
 
 int server_start(server_t *server)
@@ -98,8 +96,6 @@ int server_start(server_t *server)
 		// add the listener to the master set
 		FD_SET(server->socket_id, &server->master);
 
-		server->fdmax = server->socket_id;
-
 		return 0;
 	}
 
@@ -111,112 +107,44 @@ int server_start(server_t *server)
 
 void server_handle(server_t *server)
 {
-	char remoteIP[INET6_ADDRSTRLEN];
+	fd_set temp;
 
-	//Create a temp version of our socket list
-	server->read_fds = server->master;
+	//Copy our master to our temp
+	memcpy(&temp, &server->master, sizeof(server->master));
 
-	if (select(server->fdmax + 1, &server->read_fds, NULL, NULL, NULL) == -1)
+	printf("Checking....\n");
+
+	//Check to see if our listening socket needs some processing time
+	if (select(server->socket_id + 1, &temp, NULL, NULL, NULL) == -1)
 	{
 		perror("select");
 		exit(EXIT_FAILURE);
 	}
 
-	int i;
-	for (i = 0; i <= server->fdmax; i++)
+	//See if our listening socket needs some processing time
+	if (FD_ISSET(server->socket_id, &temp))
 	{
-		//We found a socket that needs some processing time
-		if (FD_ISSET(i, &server->read_fds))
+		socklen_t sin_size = sizeof(struct sockaddr_storage);
+		struct sockaddr_storage client_addr;
+
+		//Accept the new request
+		int newFd = accept(server->socket_id, (struct sockaddr *) &client_addr, &sin_size);
+
+		//Oh no looks like something bad happened ... let the user know
+		if (newFd == -1)
 		{
-			//The listener has a new request
-			if (i == server->socket_id)
-			{
-				socklen_t sin_size = sizeof(struct sockaddr_storage);
-				struct sockaddr_storage client_addr;
-
-				//Accept the new request
-				int newFd = accept(server->socket_id, (struct sockaddr *) &client_addr, &sin_size);
-				if (newFd == -1)
-				{
-					printf("Error: Accepting a new client failed: %s\n", strerror(errno));
-					continue;
-				}
-
-				FD_SET(newFd, &server->master); // add to master set
-				if (newFd > server->fdmax)
-				{    // keep track of the max
-					server->fdmax = newFd;
-				}
-				printf("selectserver: new connection from %s on "
-						"socket %d\n", inet_ntop(client_addr.ss_family, get_in_addr((struct sockaddr*) &client_addr), remoteIP, INET6_ADDRSTRLEN), newFd);
-			}
-			else
-			{
-			    char buf[256];    // buffer for client data
-			    int nbytes;
-
-				// handle data from a client
-				if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0)
-				{
-					// got error or connection closed by client
-					if (nbytes == 0)
-					{
-						// connection closed
-						printf("selectserver: socket %d hung up\n", i);
-					}
-					else
-					{
-						perror("recv");
-					}
-
-					close(i); // bye!
-					FD_CLR(i, &server->master); // remove from master set
-				}
-				else
-				{
-					// we got some data from a client
-					int j = 0;
-					for (j = 0; j <= server->fdmax; j++)
-					{
-						// send to everyone!
-						if (FD_ISSET(j, &server->master))
-						{
-							// except the listener and ourselves
-							if (j != server->socket_id)
-							{
-								if (send(j, buf, nbytes, 0) == -1)
-								{
-									perror("send");
-								}
-							}
-						}
-					}
-				}
-			}
+			printf("Error: Accepting a new client failed: %s\n", strerror(errno));
+			return;
 		}
+
+		//Add our new socket fd to the list of clients
+		server->clients[server->client_size] = newFd;
+		server->client_size++;
+
+		char client_printable_addr[INET6_ADDRSTRLEN];
+		inet_ntop(client_addr.ss_family, get_in_addr((struct sockaddr *) &client_addr), client_printable_addr, sizeof client_printable_addr);
+		printf("server: connection from %s at port %d\n", client_printable_addr, ((struct sockaddr_in*) &client_addr)->sin_port);
 	}
-}
-
-int server_accept_client(server_t *server)
-{
-	int reply_sock_fd = -1;
-	socklen_t sin_size = sizeof(struct sockaddr_storage);
-	struct sockaddr_storage client_addr;
-
-	if ((reply_sock_fd = accept(server->socket_id, (struct sockaddr *) &client_addr, &sin_size)) == -1)
-	{
-		printf("socket accept error\n");
-		return -1;
-	}
-
-	server->clients[server->client_size] = reply_sock_fd;
-	server->client_size++;
-
-	char client_printable_addr[INET6_ADDRSTRLEN];
-	inet_ntop(client_addr.ss_family, get_in_addr((struct sockaddr *) &client_addr), client_printable_addr, sizeof client_printable_addr);
-	printf("server: connection from %s at port %d\n", client_printable_addr, ((struct sockaddr_in*) &client_addr)->sin_port);
-
-	return 0;
 }
 
 void print_ip(struct addrinfo *ai)

@@ -16,15 +16,12 @@ typedef struct
 	int clients[MAX_CLIENTS];
 	int client_size;
     fd_set master;    // master file descriptor list
-    fd_set read_fds;  // temp file descriptor list for select()
-    int fdmax;        // maximum file descriptor number
 
 } server_t;
 
 void server_init(server_t *server, char *host, int port, int backlog);
 int server_start(server_t *server);
 void server_handle(server_t *server);
-void server_broadcast(server_t *server, const char *message, size_t size);
 
 //debug methods
 void print_ip(struct addrinfo *ai);
