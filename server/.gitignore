@@ -1,0 +1,8 @@
+#No debug folder
+/Debug
+
+#Output files
+*.o
+
+#Assembly Files
+*.s
