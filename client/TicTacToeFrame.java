@@ -12,19 +12,32 @@ public class TicTacToeFrame extends JFrame
     private static final int HEIGHT = 500;
     private static final int WIDTH = 500;
  
-    private JButton buttons[] = new JButton[11], quitBtn, chatBtn;
+    private JButton buttons[] = new JButton[10];
+    private JButton chatBtn;
+    public int player;
+    public int playerCurr;
+    public int x;
+    public int y;
+    public int pos;
     private JPanel wholePanel, boardPanel, titlePanel;
     private JLabel title;
-    private int turns = 0;
+    public int turns = 1;
     private String letter = "";
     private boolean win = false;
+
+    
  
  
     public TicTacToeFrame()
     {
        createChatButton();
        createTitlePanel();
-       createBoardPanel();
+       if(playerCurr==1){
+         createBoardPanel(1);
+       }
+       else{
+         createBoardPanel(2);
+       }
        createWholePanel();
         
         //Gets the width of the screen
@@ -39,7 +52,7 @@ public class TicTacToeFrame extends JFrame
     }
  
         
-    private void createChatButton()
+    public void createChatButton()
     {
         chatBtn = new JButton("-- Chat --");
         chatBtn.setFont(new Font(Font.SERIF, 0, 24));
@@ -60,42 +73,60 @@ public class TicTacToeFrame extends JFrame
     }
 
  
-    private void createTitlePanel()
+    public void createTitlePanel()
     {
-        title = new JLabel("Welcome EXTREME Tic Tac Toe Game!");
+        title = new JLabel("Welcome to our Tic Tac Toe Game!");
         titlePanel = new JPanel();
         title.setFont(new Font(Font.SERIF, 0, 30));
         titlePanel.add(title);
     }
  
-    private void createBoardPanel()
+    public void createBoardPanel(int player)
     {
         boardPanel = new JPanel();
         boardPanel.setLayout(LAYOUT);
- 
+        
+        if(player == 1)
+        {
+              letter = "X";
+        }
+        else  
+        {
+              letter = "O";
+        }
+             
         class ButtonListener implements ActionListener
         {
  
             @Override
             public void actionPerformed(ActionEvent ae) 
             {
-                turns++;
-                if(turns % 2 == 0)
+                /*
+                if(player == 1)
                 {
-                    letter = "O";
-                }
-                else {
                     letter = "X";
                 }
- 
+                else {
+                    letter = "O";
+                }
+             */
                 JButton pressedButton = (JButton)ae.getSource();
+                
+                for (int j = 0; j < 10; j++) {
+                     if( buttons[j] == ae.getSource() ) {
+                        pos=j;
+                        System.out.println(pos);
+                  }
+                }
                 pressedButton.setText(letter);
                 pressedButton.setEnabled(false);
-            }
+                
+               }
  
         }
- 
+        
         ActionListener buttonListener = new ButtonListener();
+
         for(int i=1; i<=9; i++)
         {
             buttons[i] = new JButton("");
@@ -105,7 +136,7 @@ public class TicTacToeFrame extends JFrame
         }
     }
  
-    private void createWholePanel()
+    public void createWholePanel()
     {
         wholePanel = new JPanel();
         wholePanel.setLayout(new BorderLayout());
@@ -113,6 +144,11 @@ public class TicTacToeFrame extends JFrame
         wholePanel.add(boardPanel, BorderLayout.CENTER);
         wholePanel.add(chatBtn, BorderLayout.SOUTH);
         add(wholePanel);
+    }
+    
+    public int pos()
+    {
+      return pos;
     }
          
 }
