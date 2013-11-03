@@ -130,6 +130,13 @@ public class TicTacToeFrame extends JFrame
                   To check to see if it is the players turn
                   To put their letter in the space selected
                 */
+                /*
+                  posToCoord(pos);
+                  send x and y
+                  if(it is a valid move){
+                     Block out and fill button
+                  }
+                */
                 pressedButton.setText(letter);
                 pressedButton.setEnabled(false);
                 /*
