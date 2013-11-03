@@ -86,5 +86,12 @@ void subserver_handle(subserver_t *subserver)
 
 void subserver_brodcast(subserver_t *subserver, const char *command, size_t size)
 {
-
+	int i;
+	for (i = 0; i < subserver->clients_size; i++)
+	{
+		if (send(subserver->clients[i], command, size, 0) == -1)
+		{
+			perror("subserver_brodcast");
+		}
+	}
 }

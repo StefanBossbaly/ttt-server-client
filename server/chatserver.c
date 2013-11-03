@@ -4,7 +4,6 @@
 
 #include "chatserver.h"
 
-
 int chatserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 {
 	//Do a cast
@@ -33,17 +32,8 @@ int chatserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 		//Do the string concatenation
 		sprintf(broadcast, "MESSAGE %s %s\n", alias, message);
 
-		printf("%s", broadcast);
-
 		//Send it to all of our clients
-		int i;
-		for (i = 0; i < subserver->clients_size; i++)
-		{
-			if (send(subserver->clients[i], broadcast, length, 0) == -1)
-			{
-				perror("send");
-			}
-		}
+		subserver_brodcast(subserver, broadcast, length);
 
 		free(broadcast);
 
