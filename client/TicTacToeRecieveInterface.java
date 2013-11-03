@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TTTInterface {
+public class TicTacToeRecieveInterface {
 	public static final Pattern MOVE_COMMAND = Pattern
 			.compile("^MOVE[\\s]+(?<x>\\d+)[\\s]+(?<y>\\d+)[\\s]+(?<player>\\d+)");
 	public static final Pattern ERROR_COMMAND = Pattern
@@ -19,7 +19,7 @@ public class TTTInterface {
 	private ErrorCommandHandler errorHandler;
 	private EndCommandHandler endHandler;
 
-	public TTTInterface(Socket socket) throws IOException {
+	public TicTacToeRecieveInterface(Socket socket) throws IOException {
 		this.socket = socket;
 		this.reader = new InputStreamReader(this.socket.getInputStream(),
 				Charset.forName("US-ASCII"));
