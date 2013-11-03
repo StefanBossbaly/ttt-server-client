@@ -9,7 +9,7 @@ import javax.swing.*;
 public class TicTacToeFrame extends JFrame
 {
     private static final GridLayout LAYOUT = new GridLayout(3,3);
-    private static final int HEIGHT = 600;
+    private static final int HEIGHT = 500;
     private static final int WIDTH = 500;
  
     private JButton buttons[] = new JButton[11], quitBtn, chatBtn;
@@ -22,7 +22,6 @@ public class TicTacToeFrame extends JFrame
  
     public TicTacToeFrame()
     {
-       createQuitButton();
        createChatButton();
        createTitlePanel();
        createBoardPanel();
@@ -39,26 +38,7 @@ public class TicTacToeFrame extends JFrame
         setLocation(screenWidth / 4, screenHeight / 4);
     }
  
-    private void createQuitButton()
-    {
-        quitBtn = new JButton("-- Quit --");
-        quitBtn.setFont(new Font(Font.SERIF, 0, 24));
- 
-        class QuitListener implements ActionListener
-        {
- 
-            @Override
-            public void actionPerformed(ActionEvent ae) 
-            {
-                System.exit(0);
-            }
- 
-       }
- 
-        ActionListener quitListener = new QuitListener();
-        quitBtn.addActionListener(quitListener);
-    }
-    
+        
     private void createChatButton()
     {
         chatBtn = new JButton("-- Chat --");
@@ -131,8 +111,7 @@ public class TicTacToeFrame extends JFrame
         wholePanel.setLayout(new BorderLayout());
         wholePanel.add(titlePanel, BorderLayout.NORTH);
         wholePanel.add(boardPanel, BorderLayout.CENTER);
-        wholePanel.add(quitBtn, BorderLayout.SOUTH);
-        wholePanel.add(chatBtn, BorderLayout.EAST);
+        wholePanel.add(chatBtn, BorderLayout.SOUTH);
         add(wholePanel);
     }
          
