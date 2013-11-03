@@ -3,7 +3,7 @@ import javax.swing.UIManager;
  
 /**
  *
- * @author TSPARR
+ * 
  */
 public class TicTacToeRunner {
  
