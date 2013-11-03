@@ -1,6 +1,7 @@
 #include "server.h"
 #include "subserver.h"
 #include "chatserver.h"
+#include "gameserver.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +57,31 @@ int main()
 		while (1)
 		{
 			server_handle(gameserver);
+
+			if (gameserver->client_size == 2)
+			{
+				subserver_t *subserver = (subserver_t *) malloc(sizeof(subserver_t));
+
+				subserver_init(subserver, gameserver->clients, gameserver->client_size);
+
+				if (fork() == 0)
+				{
+					printf("Creating game server\n");
+
+					gameserver_t *gameserver = (gameserver_t *) malloc(sizeof(gameserver_t));
+
+					gameserver_init(gameserver, subserver);
+
+					while (1)
+					{
+						gameserver_handle(gameserver);
+					}
+				}
+				else
+				{
+					gameserver->client_size = 0;
+				}
+			}
 		}
 	}
 
