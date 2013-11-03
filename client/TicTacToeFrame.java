@@ -112,8 +112,7 @@ public class TicTacToeFrame extends JFrame
         }
              
         class ButtonListener implements ActionListener
-        {
- 
+        { 
             @Override
             public void actionPerformed(ActionEvent ae) 
             {
@@ -132,7 +131,7 @@ public class TicTacToeFrame extends JFrame
                 */
                 /*
                   posToCoord(pos);
-                  send x and y
+                  sendMoveCommand(x,y);
                   if(it is a valid move){
                      Block out and fill button
                   }
