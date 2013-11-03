@@ -24,8 +24,7 @@ public class TicTacToeFrame extends JFrame
     private String letter = "";
  
     public TicTacToeFrame()
-    {
-   
+    {   
        createChatButton();
        createTitlePanel();
        /*
@@ -64,16 +63,13 @@ public class TicTacToeFrame extends JFrame
         chatBtn.setFont(new Font(Font.SERIF, 0, 24));
  
         class ChatListener implements ActionListener
-        {
- 
+        { 
             @Override
             public void actionPerformed(ActionEvent ae) 
             {
                 
-            }
- 
-       }
- 
+            } 
+       } 
         ActionListener ChatListener = new ChatListener();
         chatBtn.addActionListener(ChatListener);
     }
@@ -126,8 +122,7 @@ public class TicTacToeFrame extends JFrame
                 for (int j = 0; j < 10; j++) {
                      if( buttons[j] == ae.getSource() ) {
                         pos=j;
-                        System.out.println(pos);
-                        
+                        System.out.println(pos);                        
                   }
                 }
                 /*
@@ -143,9 +138,14 @@ public class TicTacToeFrame extends JFrame
                   Method. Then I call the closeButton Method
                   To block out the block from the other user
                 */
-                 
+                /*
+                x =
+                y =
+                player =
+                coordToPos(x,y);
+                closeButton(pos, player);
+                */  
                }
- 
         }
         /*
          Creates the buttons for the board
