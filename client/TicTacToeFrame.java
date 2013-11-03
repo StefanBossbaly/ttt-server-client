@@ -28,6 +28,13 @@ public class TicTacToeFrame extends JFrame
    
        createChatButton();
        createTitlePanel();
+       /*
+         This next part takes PlayerCurr which I get
+         From the server.  It then passes that value
+         To the createBoardPanel method that need a int player
+         Value inputted to it.  This way it always has
+         The current player being run.
+       */
        if(playerCurr==1){
          createBoardPanel(1);
        }
@@ -123,8 +130,19 @@ public class TicTacToeFrame extends JFrame
                         
                   }
                 }
+                /*
+                  Need to put in the methods to send to Stefan
+                  To check to see if it is the players turn
+                  To put their letter in the space selected
+                */
                 pressedButton.setText(letter);
                 pressedButton.setEnabled(false);
+                /*
+                  Need to implment the closeButton Method
+                  This would then get the pos from the coorToPos 
+                  Method. Then I call the closeButton Method
+                  To block out the block from the other user
+                */
                  
                }
  
