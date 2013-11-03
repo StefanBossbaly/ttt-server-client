@@ -25,6 +25,7 @@ public class TicTacToeFrame extends JFrame
  
     public TicTacToeFrame()
     {
+   
        createChatButton();
        createTitlePanel();
        if(playerCurr==1){
@@ -34,7 +35,7 @@ public class TicTacToeFrame extends JFrame
          createBoardPanel(2);
        }
        createWholePanel();
-        
+             
         //Gets the width of the screen
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
@@ -124,9 +125,7 @@ public class TicTacToeFrame extends JFrame
                 }
                 pressedButton.setText(letter);
                 pressedButton.setEnabled(false);
-                closeButton(9,1);
-                
-                
+                 
                }
  
         }
@@ -240,14 +239,15 @@ public class TicTacToeFrame extends JFrame
     }
     
     public void closeButton(int pos, int player){
+      String tempLetter;
       if(player == 1){
-         letter = "X";
+         tempLetter = "X";
       }
       else
       {
-         letter = "O";
+         tempLetter = "O";
       }
-      buttons[pos].setText(letter); //Check this to make sure its not off by 1
+      buttons[pos].setText(tempLetter);       
       buttons[pos].setEnabled(false);                
     }
          
