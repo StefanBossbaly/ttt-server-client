@@ -24,9 +24,16 @@ public class TicTacToeFrame extends JFrame
     private String letter = "";
  
     public TicTacToeFrame()
-    {
+    {   
        createChatButton();
        createTitlePanel();
+       /*
+         This next part takes PlayerCurr which I get
+         From the server.  It then passes that value
+         To the createBoardPanel method that need a int player
+         Value inputted to it.  This way it always has
+         The current player being run.
+       */
        if(playerCurr==1){
          createBoardPanel(1);
        }
@@ -34,7 +41,7 @@ public class TicTacToeFrame extends JFrame
          createBoardPanel(2);
        }
        createWholePanel();
-        
+             
         //Gets the width of the screen
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
@@ -56,16 +63,13 @@ public class TicTacToeFrame extends JFrame
         chatBtn.setFont(new Font(Font.SERIF, 0, 24));
  
         class ChatListener implements ActionListener
-        {
- 
+        { 
             @Override
             public void actionPerformed(ActionEvent ae) 
             {
                 
-            }
- 
-       }
- 
+            } 
+       } 
         ActionListener ChatListener = new ChatListener();
         chatBtn.addActionListener(ChatListener);
     }
@@ -118,17 +122,37 @@ public class TicTacToeFrame extends JFrame
                 for (int j = 0; j < 10; j++) {
                      if( buttons[j] == ae.getSource() ) {
                         pos=j;
-                        System.out.println(pos);
-                        
+                        System.out.println(pos);                        
                   }
                 }
+                /*
+                  Need to put in the methods to send to Stefan
+                  To check to see if it is the players turn
+                  To put their letter in the space selected
+                */
+                /*
+                  posToCoord(pos);
+                  send x and y
+                  if(it is a valid move){
+                     Block out and fill button
+                  }
+                */
                 pressedButton.setText(letter);
                 pressedButton.setEnabled(false);
-                closeButton(9,1);
-                
-                
+                /*
+                  Need to implment the closeButton Method
+                  This would then get the pos from the coorToPos 
+                  Method. Then I call the closeButton Method
+                  To block out the block from the other user
+                */
+                /*
+                x =
+                y =
+                player =
+                coordToPos(x,y);
+                closeButton(pos, player);
+                */  
                }
- 
         }
         /*
          Creates the buttons for the board
@@ -192,7 +216,6 @@ public class TicTacToeFrame extends JFrame
       else if(x==2 && y==2){
          pos = 9; 
       }
-
     }
     
     /*
@@ -239,16 +262,24 @@ public class TicTacToeFrame extends JFrame
       }
     }
     
+    /*
+      This method closes the button pressed by the other player
+      It gets the input of the pos that was selected from the server
+      Then it gets what player pushed it from the server
+      It then uses a local letter variable to avoid messing with
+      The global letter variable in the program.
+      It then sets the pos with that letter and locks that button out.
+    */
     public void closeButton(int pos, int player){
+      String tempLetter;
       if(player == 1){
-         letter = "X";
+         tempLetter = "X";
       }
       else
       {
-         letter = "O";
+         tempLetter = "O";
       }
-      buttons[pos].setText(letter); //Check this to make sure its not off by 1
+      buttons[pos].setText(tempLetter);       
       buttons[pos].setEnabled(false);                
-    }
-         
+    }         
 }
