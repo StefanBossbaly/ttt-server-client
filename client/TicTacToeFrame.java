@@ -146,9 +146,43 @@ public class TicTacToeFrame extends JFrame
         add(wholePanel);
     }
     
-    public int pos()
-    {
-      return pos;
+    public void posToCoord(int pos) {
+      if(pos == 1){
+         x = 0;
+         y = 0;
+      }
+      else if(pos == 2){
+         x = 0;
+         y = 1;
+      }
+      else if(pos == 3){
+         x = 0;
+         y = 2;
+      }
+      else if(pos == 4){
+         x = 1;
+         y = 0;
+      }
+      else if(pos == 5){
+         x = 1;
+         y = 1;
+      }
+      else if(pos == 6){
+         x = 1;
+         y = 2;
+      }
+      else if(pos == 7){
+         x = 2;
+         y = 0;
+      }
+      else if(pos == 8){
+         x = 2;
+         y = 1;
+      }
+      else if(pos == 9){
+         x = 2;
+         y = 2; 
+      }
     }
          
 }
