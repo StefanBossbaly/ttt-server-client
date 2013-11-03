@@ -95,3 +95,11 @@ void subserver_brodcast(subserver_t *subserver, const char *command, size_t size
 		}
 	}
 }
+
+void subserver_send(subserver_t *subserver, int socket_id, const char *command, size_t size)
+{
+	if (send(socket_id, command, size, 0) == -1)
+	{
+		perror("subserver_send");
+	}
+}
