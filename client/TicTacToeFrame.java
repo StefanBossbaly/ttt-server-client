@@ -209,7 +209,6 @@ public class TicTacToeFrame extends JFrame
       else if(x==2 && y==2){
          pos = 9; 
       }
-
     }
     
     /*
@@ -256,6 +255,14 @@ public class TicTacToeFrame extends JFrame
       }
     }
     
+    /*
+      This method closes the button pressed by the other player
+      It gets the input of the pos that was selected from the server
+      Then it gets what player pushed it from the server
+      It then uses a local letter variable to avoid messing with
+      The global letter variable in the program.
+      It then sets the pos with that letter and locks that button out.
+    */
     public void closeButton(int pos, int player){
       String tempLetter;
       if(player == 1){
@@ -267,6 +274,5 @@ public class TicTacToeFrame extends JFrame
       }
       buttons[pos].setText(tempLetter);       
       buttons[pos].setEnabled(false);                
-    }
-         
+    }         
 }
