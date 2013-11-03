@@ -23,10 +23,13 @@ public class Driver {
         
    }
    
+   public void makeSocket(int portNumber, int address){
+   
+   }
    
    public void playerTurn(char player, int row, int col){
-    
-   }
+      
+   } 
 
    public void declareDraw(){
    
