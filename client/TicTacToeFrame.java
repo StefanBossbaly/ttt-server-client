@@ -119,10 +119,13 @@ public class TicTacToeFrame extends JFrame
                      if( buttons[j] == ae.getSource() ) {
                         pos=j;
                         System.out.println(pos);
+                        
                   }
                 }
                 pressedButton.setText(letter);
                 pressedButton.setEnabled(false);
+                closeButton(9,1);
+                
                 
                }
  
@@ -235,7 +238,17 @@ public class TicTacToeFrame extends JFrame
          y = 2; 
       }
     }
+    
+    public void closeButton(int pos, int player){
+      if(player == 1){
+         letter = "X";
+      }
+      else
+      {
+         letter = "O";
+      }
+      buttons[pos].setText(letter); //Check this to make sure its not off by 1
+      buttons[pos].setEnabled(false);                
+    }
          
 }
-
-
