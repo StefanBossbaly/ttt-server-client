@@ -15,7 +15,7 @@ public class TTTInterface {
 		public void handleErrorCommand(int error);
 	}
 	
-	public interface EndErrorCommand {
+	public interface EndCommandHandler {
 		public void handleEndCommand(int player);
 	}
 }
