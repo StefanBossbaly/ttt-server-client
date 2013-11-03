@@ -145,8 +145,9 @@ public class TicTacToeFrame extends JFrame
         wholePanel.add(chatBtn, BorderLayout.SOUTH);
         add(wholePanel);
     }
+    
     public void coordToPos(int x, int y){
-      if(x==0 && y=00){
+      if(x==0 && y==0){
          pos = 1;
       }
       else if(x==0 && y==1){
@@ -155,32 +156,27 @@ public class TicTacToeFrame extends JFrame
       else if(x==0 && y==2){
          pos = 3;
       }
-      else if(pos == 4){
-         x = 1;
-         y = 0;
+      else if(x==1 && y==0){
+         pos = 4;
       }
-      else if(pos == 5){
-         x = 1;
-         y = 1;
+      else if(x==1 && y==1){
+         pos = 5;
       }
-      else if(pos == 6){
-         x = 1;
-         y = 2;
+      else if(x==1 && y==2){
+         pos = 6;
       }
-      else if(pos == 7){
-         x = 2;
-         y = 0;
+      else if(x==2 && y==0){
+         pos = 7;
       }
-      else if(pos == 8){
-         x = 2;
-         y = 1;
+      else if(x==2 && y==1){
+         pos = 8;
       }
-      else if(pos == 9){
-         x = 2;
-         y = 2; 
+      else if(x==2 && y==2){
+         pos = 9; 
       }
 
     }
+    
     public void posToCoord(int pos) {
       if(pos == 1){
          x = 0;
