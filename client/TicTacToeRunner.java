@@ -1,4 +1,5 @@
 import javax.swing.JFrame;
+import javax.swing.UIManager;
  
 /**
  *
@@ -11,7 +12,15 @@ public class TicTacToeRunner {
      */
     public static void main(String[] args) 
     {
-        JFrame frame = new TicTacToeFrame();
+        try
+	{
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	}
+	catch (Exception e)
+	{
+		e.printStackTrace();
+	}
+	JFrame frame = new TicTacToeFrame();
         //JFrame frame1 = new ChatClient();
         //frame1.setTitle("Chat Window");
         frame.setTitle("Tic Tac Toe Game");
