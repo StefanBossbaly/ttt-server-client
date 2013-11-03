@@ -21,12 +21,7 @@ public class TicTacToeFrame extends JFrame
     public int pos;
     private JPanel wholePanel, boardPanel, titlePanel;
     private JLabel title;
-    public int turns = 1;
     private String letter = "";
-    private boolean win = false;
-
-    
- 
  
     public TicTacToeFrame()
     {
@@ -51,7 +46,10 @@ public class TicTacToeFrame extends JFrame
         setLocation(screenWidth / 4, screenHeight / 4);
     }
  
-        
+    /*
+      This method invokes the chat server
+      NEEDS WORK
+    */    
     public void createChatButton()
     {
         chatBtn = new JButton("-- Chat --");
@@ -72,7 +70,10 @@ public class TicTacToeFrame extends JFrame
         chatBtn.addActionListener(ChatListener);
     }
 
- 
+    /*
+      This creates just the title pane
+      Its the Frame window title
+    */
     public void createTitlePanel()
     {
         title = new JLabel("Welcome to our Tic Tac Toe Game!");
@@ -80,7 +81,18 @@ public class TicTacToeFrame extends JFrame
         title.setFont(new Font(Font.SERIF, 0, 30));
         titlePanel.add(title);
     }
- 
+    
+    /*
+      This is the heart of the program.
+      It intializes the board in the panel
+      It then determines what player you are
+      It then creates a class for a buttonListener
+      This listens for button pressing
+      Once it is pressed it uses the source of the pressed button
+      To find what position was pressed
+      After that it puts a letter in that button
+      Then makes the button false so it cannot be altered
+    */
     public void createBoardPanel(int player)
     {
         boardPanel = new JPanel();
@@ -101,15 +113,6 @@ public class TicTacToeFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent ae) 
             {
-                /*
-                if(player == 1)
-                {
-                    letter = "X";
-                }
-                else {
-                    letter = "O";
-                }
-             */
                 JButton pressedButton = (JButton)ae.getSource();
                 
                 for (int j = 0; j < 10; j++) {
@@ -124,7 +127,12 @@ public class TicTacToeFrame extends JFrame
                }
  
         }
-        
+        /*
+         Creates the buttons for the board
+         It then puts an action listener called button listener
+         It listens for any presses of a button
+         Then adds the buttons to the board panel
+        */
         ActionListener buttonListener = new ButtonListener();
 
         for(int i=1; i<=9; i++)
@@ -135,7 +143,10 @@ public class TicTacToeFrame extends JFrame
             boardPanel.add(buttons[i]);
         }
     }
- 
+    /*
+      This method creates the entire JFrame you see
+      It combines the title panel, board panel, and chat button
+    */
     public void createWholePanel()
     {
         wholePanel = new JPanel();
@@ -146,6 +157,10 @@ public class TicTacToeFrame extends JFrame
         add(wholePanel);
     }
     
+    /*
+      This method gets the coordinates from the server
+      Then tells me what position that is equal to
+    */
     public void coordToPos(int x, int y){
       if(x==0 && y==0){
          pos = 1;
@@ -177,6 +192,11 @@ public class TicTacToeFrame extends JFrame
 
     }
     
+    /*
+      This method changes the pos I get from the user
+      Into the corresponding x and y corrdinates
+      So then I can send them to the server
+    */
     public void posToCoord(int pos) {
       if(pos == 1){
          x = 0;
