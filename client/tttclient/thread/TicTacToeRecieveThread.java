@@ -35,7 +35,14 @@ public class TicTacToeRecieveThread extends Thread {
 			recieveInterface.registerEndCommandHandler(this.endHandler);
 
 			while (true) {
-				recieveInterface.acceptInput();
+				//See if we are ready for input
+				if (recieveInterface.isReady()) {
+					recieveInterface.acceptInput();
+				} 
+				//If not then just yield and wait for another turn
+				else {
+					Thread.yield();
+				}
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Should never happen");

@@ -1,4 +1,5 @@
 package tttclient.serverinterface;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -45,6 +46,14 @@ public class TicTacToeRecieveInterface {
 		this.endHandler = handler;
 	}
 
+	public boolean isReady() {
+		try {
+			return reader.ready();
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
 	public void acceptInput() throws IOException {
 		if (reader.ready()) {
 			char[] buffer = new char[1024];
@@ -52,21 +61,20 @@ public class TicTacToeRecieveInterface {
 			if (reader.read(buffer, 0, buffer.length) == -1) {
 				return;
 			}
-			
+
 			String command = "";
-			
-			for (int i = 0; buffer[i] != '\0'; i++)
-			{
+
+			for (int i = 0; buffer[i] != '\0'; i++) {
 				command += buffer[i];
 			}
-			
+
 			System.out.println("Buffer read: " + command);
 			Matcher matcher = null;
 
 			matcher = MOVE_COMMAND.matcher(command);
 			if (matcher.matches()) {
 				System.out.println("Move Command Recieved");
-				
+
 				int x = Integer.parseInt(matcher.group("x"));
 				int y = Integer.parseInt(matcher.group("y"));
 				int player = Integer.parseInt(matcher.group("player"));
@@ -79,7 +87,7 @@ public class TicTacToeRecieveInterface {
 			matcher = ERROR_COMMAND.matcher(command);
 			if (matcher.matches()) {
 				System.out.println("Error Command Recieved");
-				
+
 				int error = Integer.parseInt(matcher.group("error"));
 
 				this.errorHandler.handleErrorCommand(error);
@@ -95,7 +103,7 @@ public class TicTacToeRecieveInterface {
 				this.endHandler.handleEndCommand(status, player);
 				return;
 			}
-			
+
 			System.out.println("Command not reconized");
 		}
 	}
