@@ -178,7 +178,21 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 
 	@Override
 	public void handleEndCommand(int status, int player) {
-		System.out.println("End command recieved");
+
+		for (int i = 0; i < buttons.length; i++) {
+			buttons[i].setEnabled(false);
+		}
+
+		if (status == 0) {
+			JOptionPane.showMessageDialog(this, "The game has ended! Player "
+					+ player + " has won!", "Game Ended!",
+					JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this,
+					"The game has ended for unknown reason! Player " + player
+							+ " has won!", "Game Ended!",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 	@Override
