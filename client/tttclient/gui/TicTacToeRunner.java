@@ -1,4 +1,5 @@
 package tttclient.gui;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -6,8 +7,8 @@ import java.net.UnknownHostException;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
-import tttclient.serverinterface.TicTacToeRecieveInterface;
 import tttclient.serverinterface.TicTacToeSendInterface;
+import tttclient.thread.TicTacToeRecieveThread;
 
 /**
  *
@@ -36,22 +37,9 @@ public class TicTacToeRunner {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
-		(new Thread() {
-			public void run() {
-				try {
-					TicTacToeRecieveInterface recieveInterface = new TicTacToeRecieveInterface(
-							socket);
-					recieveInterface.registerMoveCommandHandler(frame);
-					recieveInterface.registerErrorCommandHandler(frame);
-					recieveInterface.registerEndCommandHandler(frame);
-
-					while (true) {
-						recieveInterface.acceptInput();
-					}
-				} catch (IOException e) {
-					throw new RuntimeException("Should never happen");
-				}
-			}
-		}).start();
+		// Start listening for server responses
+		TicTacToeRecieveThread thread = new TicTacToeRecieveThread(socket,
+				frame, frame, frame);
+		thread.start();
 	}
 }
