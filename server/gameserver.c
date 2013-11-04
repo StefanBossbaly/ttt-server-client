@@ -122,13 +122,13 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			player_t winner = ttt_winner(gameserver->game);
 
 			//How many characters do we need?
-			length = snprintf(NULL, 0, "END %i %i", 1, player) + 1;
+			length = snprintf(NULL, 0, "END %i %i", 1, winner) + 1;
 
 			//Allocate the space
 			broadcast = (char *) malloc(length * sizeof(char));
 
 			//Do the string concatenation
-			sprintf(broadcast, "END %i %i", 0, player);
+			sprintf(broadcast, "END %i %i", 0, winner);
 
 			printf("Broadcasting command: %s\n", broadcast);
 
