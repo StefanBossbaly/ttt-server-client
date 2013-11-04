@@ -1,4 +1,4 @@
-package coltGUI;
+
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,7 +30,7 @@ public class MainGUI {
     JTextField  usernameChooser;
     JFrame      preFrame;
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -44,7 +44,7 @@ public class MainGUI {
                 mainGUI.preDisplay();
             }
         });
-    }
+    }*/
 
     public void preDisplay() {
         newFrame.setVisible(false);

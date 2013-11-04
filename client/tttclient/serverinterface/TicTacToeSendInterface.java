@@ -1,3 +1,4 @@
+package tttclient.serverinterface;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;

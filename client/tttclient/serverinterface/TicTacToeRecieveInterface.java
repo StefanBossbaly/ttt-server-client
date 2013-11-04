@@ -1,9 +1,14 @@
+package tttclient.serverinterface;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import tttclient.handler.EndCommandHandler;
+import tttclient.handler.ErrorCommandHandler;
+import tttclient.handler.MoveCommandHandler;
 
 public class TicTacToeRecieveInterface {
 	public static final Pattern MOVE_COMMAND = Pattern
