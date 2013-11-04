@@ -44,7 +44,53 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			return -1;
 		}
 
-		//TODO check error conditions
+		//Make sure that the pos is in bounds
+		if (! ttt_is_in_bounds(gameserver->game, x, y))
+		{
+			printf("Invalid move command. Pos is out of bounds\n");
+
+			//How many characters do we need?
+			int length = snprintf(NULL, 0, "ERROR 2") + 1;
+
+			//Allocate the space
+			char *broadcast = (char *) malloc(length * sizeof(char));
+
+			//Do the string concatenation
+			sprintf(broadcast, "ERROR 2");
+
+			printf("Sending command: %s\n", broadcast);
+
+			//Send it to the client
+			subserver_send(gameserver->subserver, id, broadcast, length);
+
+			free(broadcast);
+
+			return -1;
+		}
+
+		//Make sure the position is not occupied
+		if (ttt_is_pos_occupied(gameserver->game, x, y))
+		{
+			printf("Invalid move command. Pos is out of bounds\n");
+
+			//How many characters do we need?
+			int length = snprintf(NULL, 0, "ERROR 3") + 1;
+
+			//Allocate the space
+			char *broadcast = (char *) malloc(length * sizeof(char));
+
+			//Do the string concatenation
+			sprintf(broadcast, "ERROR 3");
+
+			printf("Sending command: %s\n", broadcast);
+
+			//Send it to the client
+			subserver_send(gameserver->subserver, id, broadcast, length);
+
+			free(broadcast);
+
+			return -1;
+		}
 
 		printf("MOVE COMMAND valid\n");
 
@@ -66,9 +112,11 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 		ttt_make_move(gameserver->game, x, y);
 
 		free(broadcast);
+
+		return 0;
 	}
 
-	return 0;
+	return -1;
 }
 
 void gameserver_init(gameserver_t *gameserver, subserver_t *subserver)
