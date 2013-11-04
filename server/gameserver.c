@@ -130,6 +130,8 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			//Do the string concatenation
 			sprintf(broadcast, "END %i %i", 0, player);
 
+			printf("Broadcasting command: %s\n", broadcast);
+
 			//Send it to the client
 			subserver_brodcast(gameserver->subserver, broadcast, length);
 
