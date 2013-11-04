@@ -130,6 +130,10 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			//Do the string concatenation
 			sprintf(broadcast, "END %i %i", 0, winner);
 
+			//TODO this is very bad, implement something better than busy waiting
+			int z;
+			for (z = 0; z < 1000000; z++) { };
+
 			printf("Broadcasting command: %s\n", broadcast);
 
 			//Send it to the client
