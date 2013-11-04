@@ -21,32 +21,17 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	private static final int HEIGHT = 500;
 	private static final int WIDTH = 500;
 
-	private JButton buttons[] = new JButton[10];
+	private JButton buttons[] = new JButton[9];
 	private JButton chatBtn;
-	public int player;
-	public int playerCurr;
-	public int x;
-	public int y;
-	public int pos;
 	private JPanel wholePanel, boardPanel, titlePanel;
 	private JLabel title;
-	private String letter = "";
 
 	public TicTacToeFrame(TicTacToeSendInterface sendInterface) {
 		this.sendInterface = sendInterface;
+		
 		createChatButton();
 		createTitlePanel();
-		/*
-		 * This next part takes PlayerCurr which I get From the server. It then
-		 * passes that value To the createBoardPanel method that need a int
-		 * player Value inputted to it. This way it always has The current
-		 * player being run.
-		 */
-		if (playerCurr == 1) {
-			createBoardPanel(1);
-		} else {
-			createBoardPanel(2);
-		}
+		createBoardPanel();
 		createWholePanel();
 
 		// Gets the width of the screen
@@ -57,8 +42,8 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 
 		// Sets the screen size to half the height and width of the screen, and
 		// centers it
-		setSize(WIDTH, HEIGHT);
-		setLocation(screenWidth / 4, screenHeight / 4);
+		this.setSize(WIDTH, HEIGHT);
+		this.setLocation(screenWidth / 4, screenHeight / 4);
 	}
 
 	/*
@@ -96,16 +81,10 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	 * After that it puts a letter in that button Then makes the button false so
 	 * it cannot be altered
 	 */
-	public void createBoardPanel(int player) {
+	public void createBoardPanel() {
 		boardPanel = new JPanel();
 		boardPanel.setLayout(LAYOUT);
-
-		if (player == 1) {
-			letter = "X";
-		} else {
-			letter = "O";
-		}
-
+		
 		/*
 		 * Creates the buttons for the board It then puts an action listener
 		 * called button listener It listens for any presses of a button Then
@@ -113,7 +92,7 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 		 */
 		ActionListener buttonListener = new ButtonListener(this.sendInterface);
 
-		for (int i = 1; i <= 9; i++) {
+		for (int i = 0; i < buttons.length; i++) {
 			buttons[i] = new JButton("");
 			buttons[i].setFont(new Font(Font.SERIF, 0, 24));
 			buttons[i].addActionListener(buttonListener);
@@ -138,61 +117,20 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	 * This method gets the coordinates from the server Then tells me what
 	 * position that is equal to
 	 */
-	public void coordToPos(int x, int y) {
-		if (x == 0 && y == 0) {
-			pos = 1;
-		} else if (x == 0 && y == 1) {
-			pos = 2;
-		} else if (x == 0 && y == 2) {
-			pos = 3;
-		} else if (x == 1 && y == 0) {
-			pos = 4;
-		} else if (x == 1 && y == 1) {
-			pos = 5;
-		} else if (x == 1 && y == 2) {
-			pos = 6;
-		} else if (x == 2 && y == 0) {
-			pos = 7;
-		} else if (x == 2 && y == 1) {
-			pos = 8;
-		} else if (x == 2 && y == 2) {
-			pos = 9;
-		}
+	public int coordToPos(int x, int y) {
+		return (x * 3) + y;
 	}
 
 	/*
 	 * This method changes the pos I get from the user Into the corresponding x
 	 * and y corrdinates So then I can send them to the server
 	 */
-	public void posToCoord(int pos) {
-		if (pos == 1) {
-			x = 0;
-			y = 0;
-		} else if (pos == 2) {
-			x = 0;
-			y = 1;
-		} else if (pos == 3) {
-			x = 0;
-			y = 2;
-		} else if (pos == 4) {
-			x = 1;
-			y = 0;
-		} else if (pos == 5) {
-			x = 1;
-			y = 1;
-		} else if (pos == 6) {
-			x = 1;
-			y = 2;
-		} else if (pos == 7) {
-			x = 2;
-			y = 0;
-		} else if (pos == 8) {
-			x = 2;
-			y = 1;
-		} else if (pos == 9) {
-			x = 2;
-			y = 2;
-		}
+	public int xPosToCoord(int pos) {
+		return (pos / 3);
+	}
+	
+	public int yPosToCoord(int pos) {
+		return (pos % 3);
 	}
 
 	/*
@@ -224,18 +162,16 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 		public void actionPerformed(ActionEvent ae) {
 			JButton pressedButton = (JButton) ae.getSource();
 
-			for (int j = 0; j < 10; j++) {
-				if (buttons[j] == ae.getSource()) {
-					pos = j;
-					System.out.println(pos);
+			for (int i = 0; i < buttons.length; i++) {
+				if (buttons[i] == pressedButton) {
+					int x = xPosToCoord(i);
+					int y = yPosToCoord(i);
+					
+					sendInterface.sendMoveCommand(x, y);
+					
+					return;
 				}
 			}
-			/*
-			 * Need to put in the methods to send to Stefan To check to see if
-			 * it is the players turn To put their letter in the space selected
-			 */
-			posToCoord(pos);
-			sendInterface.sendMoveCommand(x, y);
 		}
 	}
 
@@ -247,27 +183,25 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	@Override
 	public void handleErrorCommand(int error) {
 		if (error == 1) {
-			JOptionPane.showMessageDialog(this,
-					"Not your turn");
+			JOptionPane.showMessageDialog(this, "Not your turn!", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		else if (error == 2){
+			JOptionPane.showMessageDialog(this, "Location is out of bounds!", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		else if (error == 3)
+		{
+			JOptionPane.showMessageDialog(this, "Location is currently occupied!", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(this, "Unspecified error!", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
 
 	@Override
 	public void handleMoveCommand(int x, int y, int player) {
-		coordToPos(x, y);
-		String temp;
-		
-		if (player == 1)
-		{
-			temp = "X";
-		}
-		else
-		{
-			temp = "0";
-		}
-		
-		buttons[pos].setText(temp);
-		buttons[pos].setEnabled(false);
+		int position = coordToPos(x, y);
+		closeButton(position, player);
 	}
 }
