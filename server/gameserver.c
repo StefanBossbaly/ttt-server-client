@@ -113,6 +113,29 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 
 		free(broadcast);
 
+		//Check to see if it is end of game
+		if (ttt_has_winner(gameserver->game))
+		{
+			printf("End of game condition!\n");
+
+			//Get the winner
+			player_t winner = ttt_winner(gameserver->game);
+
+			//How many characters do we need?
+			length = snprintf(NULL, 0, "END %i %i", 1, player) + 1;
+
+			//Allocate the space
+			broadcast = (char *) malloc(length * sizeof(char));
+
+			//Do the string concatenation
+			sprintf(broadcast, "END %i %i", 0, player);
+
+			//Send it to the client
+			subserver_brodcast(gameserver->subserver, broadcast, length);
+
+			free(broadcast);
+		}
+
 		return 0;
 	}
 
