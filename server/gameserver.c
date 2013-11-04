@@ -29,10 +29,12 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			int length = snprintf(NULL, 0, "ERROR 1") + 1;
 
 			//Allocate the space
-			char *broadcast = (char *) malloc(length);
+			char *broadcast = (char *) malloc(length * sizeof(char));
 
 			//Do the string concatenation
 			sprintf(broadcast, "ERROR 1");
+
+			printf("Sending command: %s\n", broadcast);
 
 			//Send it to the client
 			subserver_send(gameserver->subserver, id, broadcast, length);
@@ -50,7 +52,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 		int length = snprintf(NULL, 0, "MOVE %i %i %i", x, y, player) + 1;
 
 		//Allocate the space
-		char *broadcast = (char *) malloc(length);
+		char *broadcast = (char *) malloc(length * sizeof(char));
 
 		//Do the string concatenation
 		sprintf(broadcast, "MOVE %i %i %i", x, y, player);

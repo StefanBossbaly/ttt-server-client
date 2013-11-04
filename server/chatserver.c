@@ -27,7 +27,7 @@ int chatserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 		int length = snprintf(NULL, 0, "MESSAGE %s %s", alias, message) + 1;
 
 		//Allocate the space
-		char *broadcast = (char *) malloc(length);
+		char *broadcast = (char *) malloc(length * sizeof(char));
 
 		//Do the string concatenation
 		sprintf(broadcast, "MESSAGE %s %s\n", alias, message);
