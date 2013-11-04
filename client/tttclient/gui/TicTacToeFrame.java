@@ -70,7 +70,7 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	public void createTitlePanel() {
 		title = new JLabel("Welcome to our Tic Tac Toe Game!");
 		titlePanel = new JPanel();
-		title.setFont(new Font(Font.SERIF, 0, 30));
+		title.setFont(new Font(Font.SERIF, 0, 24));
 		titlePanel.add(title);
 	}
 
