@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 
 public class TicTacToeRecieveInterface {
 	public static final Pattern MOVE_COMMAND = Pattern
-			.compile("^MOVE[\\s]+(?<x>\\d+)[\\s]+(?<y>\\d+)[\\s]+(?<player>\\d+)");
+			.compile("MOVE[\\s]+(?<x>\\d+)[\\s]+(?<y>\\d+)[\\s]+(?<player>\\d+)");
 	public static final Pattern ERROR_COMMAND = Pattern
-			.compile("^ERROR[\\s]+(?<error>[\\d]+)");
+			.compile("ERROR[\\s]+(?<error>[\\d]+)");
 	public static final Pattern END_COMMAND = Pattern
-			.compile("^END[\\s]+(?<status>[\\d]+)[\\s]+(?<player>[\\d]+)");
+			.compile("END[\\s]+(?<status>[\\d]+)[\\s]+(?<player>[\\d]+)");
 
 	private Socket socket;
 	private InputStreamReader reader;
@@ -47,12 +47,21 @@ public class TicTacToeRecieveInterface {
 			if (reader.read(buffer, 0, buffer.length) == -1) {
 				return;
 			}
-
-			String command = new String(buffer);
+			
+			String command = "";
+			
+			for (int i = 0; buffer[i] != '\0'; i++)
+			{
+				command += buffer[i];
+			}
+			
+			System.out.println("Buffer read: " + command);
 			Matcher matcher = null;
 
 			matcher = MOVE_COMMAND.matcher(command);
 			if (matcher.matches()) {
+				System.out.println("Move Command Recieved");
+				
 				int x = Integer.parseInt(matcher.group("x"));
 				int y = Integer.parseInt(matcher.group("y"));
 				int player = Integer.parseInt(matcher.group("player"));
@@ -64,6 +73,8 @@ public class TicTacToeRecieveInterface {
 
 			matcher = ERROR_COMMAND.matcher(command);
 			if (matcher.matches()) {
+				System.out.println("Error Command Recieved");
+				
 				int error = Integer.parseInt(matcher.group("error"));
 
 				this.errorHandler.handleErrorCommand(error);
@@ -72,26 +83,15 @@ public class TicTacToeRecieveInterface {
 
 			matcher = END_COMMAND.matcher(command);
 			if (matcher.matches()) {
+				System.out.println("End Command Recieved");
 				int status = Integer.parseInt(matcher.group("status"));
 				int player = Integer.parseInt(matcher.group("player"));
 
 				this.endHandler.handleEndCommand(status, player);
 				return;
 			}
+			
+			System.out.println("Command not reconized");
 		}
-
-		reader.close();
-	}
-	
-	public interface MoveCommandHandler {
-		public void handleMoveCommand(int x, int y, int player);
-	}
-
-	public interface ErrorCommandHandler {
-		public void handleErrorCommand(int error);
-	}
-
-	public interface EndCommandHandler {
-		public void handleEndCommand(int status, int player);
 	}
 }
