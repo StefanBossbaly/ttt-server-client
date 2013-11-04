@@ -28,5 +28,4 @@ void gameserver_handle(gameserver_t *chatserver);
 player_t gameserver_get_player(gameserver_t *gameserver, int socket_id);
 void gameserver_set_player(gameserver_t *gameserver, int socket_id, player_t player);
 
-
 #endif /* GAMESERVER_H_ */

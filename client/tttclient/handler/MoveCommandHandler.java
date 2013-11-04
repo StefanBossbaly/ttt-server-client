@@ -8,7 +8,7 @@ package tttclient.handler;
  * 
  */
 public interface MoveCommandHandler {
-	
+
 	/**
 	 * The move command moves a player to a location.
 	 * 

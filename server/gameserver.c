@@ -45,7 +45,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 		}
 
 		//Make sure that the pos is in bounds
-		if (! ttt_is_in_bounds(gameserver->game, x, y))
+		if (!ttt_is_in_bounds(gameserver->game, x, y))
 		{
 			printf("Invalid move command. Pos is out of bounds\n");
 

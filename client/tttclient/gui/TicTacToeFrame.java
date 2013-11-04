@@ -1,4 +1,5 @@
 package tttclient.gui;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +29,7 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 
 	public TicTacToeFrame(TicTacToeSendInterface sendInterface) {
 		this.sendInterface = sendInterface;
-		
+
 		createChatButton();
 		createTitlePanel();
 		createBoardPanel();
@@ -84,7 +85,7 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	public void createBoardPanel() {
 		boardPanel = new JPanel();
 		boardPanel.setLayout(LAYOUT);
-		
+
 		/*
 		 * Creates the buttons for the board It then puts an action listener
 		 * called button listener It listens for any presses of a button Then
@@ -128,7 +129,7 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	public int xPosToCoord(int pos) {
 		return (pos / 3);
 	}
-	
+
 	public int yPosToCoord(int pos) {
 		return (pos % 3);
 	}
@@ -166,9 +167,9 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 				if (buttons[i] == pressedButton) {
 					int x = xPosToCoord(i);
 					int y = yPosToCoord(i);
-					
+
 					sendInterface.sendMoveCommand(x, y);
-					
+
 					return;
 				}
 			}
@@ -177,24 +178,24 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 
 	@Override
 	public void handleEndCommand(int status, int player) {
-		throw new RuntimeException("FU");
+		System.out.println("End command recieved");
 	}
 
 	@Override
 	public void handleErrorCommand(int error) {
 		if (error == 1) {
-			JOptionPane.showMessageDialog(this, "Not your turn!", "Error", JOptionPane.ERROR_MESSAGE);
-		}
-		else if (error == 2){
-			JOptionPane.showMessageDialog(this, "Location is out of bounds!", "Error", JOptionPane.ERROR_MESSAGE);
-		}
-		else if (error == 3)
-		{
-			JOptionPane.showMessageDialog(this, "Location is currently occupied!", "Error", JOptionPane.ERROR_MESSAGE);
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(this, "Unspecified error!", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Not your turn!", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		} else if (error == 2) {
+			JOptionPane.showMessageDialog(this, "Location is out of bounds!",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		} else if (error == 3) {
+			JOptionPane.showMessageDialog(this,
+					"Location is currently occupied!", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this, "Unspecified error!", "Error",
+					JOptionPane.ERROR_MESSAGE);
 		}
 
 	}

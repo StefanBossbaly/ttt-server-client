@@ -1,6 +1,5 @@
 #include "game.h"
 
-
 void ttt_init_game(game_t *game, int rows, int columns, int connect, cell_t **grid)
 {
 	//Init our game struct
@@ -67,7 +66,7 @@ int ttt_make_move(game_t *game, int row, int column)
 cell_t *ttt_get_cell(game_t *game, int row, int column)
 {
 	//Make sure that we are in bounds
-	if (! ttt_is_in_bounds(game, row, column))
+	if (!ttt_is_in_bounds(game, row, column))
 	{
 		return 0;
 	}
@@ -83,7 +82,7 @@ player_t ttt_winner(game_t *game)
 
 	for (i = 0; i < game->rows; i++)
 	{
-		for(j = 0; j < game->columns; j++)
+		for (j = 0; j < game->columns; j++)
 		{
 			player_t player = ttt_check_winner_cell(game, i, j);
 
@@ -124,7 +123,6 @@ player_t ttt_check_winner_cell(game_t *game, int row, int column)
 	{
 		return player;
 	}
-
 
 	//Check horizontal
 	player = ttt_check_horizontal(game, row, column);

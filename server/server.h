@@ -15,7 +15,7 @@ typedef struct
 	int socket_id;
 	int clients[MAX_CLIENTS];
 	int client_size;
-    fd_set master;    // master file descriptor list
+	fd_set master;    // master file descriptor list
 
 } server_t;
 

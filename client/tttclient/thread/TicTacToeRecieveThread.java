@@ -35,11 +35,11 @@ public class TicTacToeRecieveThread extends Thread {
 			recieveInterface.registerEndCommandHandler(this.endHandler);
 
 			while (true) {
-				//See if we are ready for input
+				// See if we are ready for input
 				if (recieveInterface.isReady()) {
 					recieveInterface.acceptInput();
-				} 
-				//If not then just yield and wait for another turn
+				}
+				// If not then just yield and wait for another turn
 				else {
 					Thread.yield();
 				}

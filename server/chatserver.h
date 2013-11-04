@@ -29,5 +29,4 @@ void chatserver_get_alias(chatserver_t *chatserver, int id, char *buffer);
 void chatserver_set_alias(chatserver_t *chatserver, int id, char *alias);
 void chatserver_handle(chatserver_t *chatserver);
 
-
 #endif /* CHATSERVER_H_ */
