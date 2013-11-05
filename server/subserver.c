@@ -103,3 +103,15 @@ void subserver_send(subserver_t *subserver, int socket_id, const char *command, 
 		perror("subserver_send");
 	}
 }
+
+void subserver_close(subserver_t *subserver)
+{
+	int i;
+	for (i = 0; i < subserver->clients_size; i++)
+	{
+		if (close(subserver->clients[i]) == -1)
+		{
+			perror("subserver_close");
+		}
+	}
+}

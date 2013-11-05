@@ -33,4 +33,5 @@ void subserver_handle(subserver_t *subserver);
 void subserver_brodcast(subserver_t *subserver, const char *command, size_t size);
 void subserver_send(subserver_t *subserver, int socket_id, const char *command, size_t size);
 int subserver_max_fd(subserver_t *subserver);
+void subserver_close(subserver_t *subserver);
 #endif /* SUBSERVER_H_ */

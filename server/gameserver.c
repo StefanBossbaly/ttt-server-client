@@ -207,3 +207,23 @@ void gameserver_set_player(gameserver_t *gameserver, int socket_id, player_t pla
 
 	gameserver->player_size++;
 }
+
+int gameserver_is_finished(gameserver_t *gameserver)
+{
+	return ttt_is_end_of_game(gameserver->game);
+}
+
+void gameserver_close(gameserver_t *gameserver)
+{
+	//Close the subserver first
+	subserver_close(gameserver->subserver);
+
+	//Dealloc memory for game board
+	int i;
+	for (i = 0; i < ROWS; i++)
+	{
+		free(gameserver->game->grid[i]);
+	}
+
+	free(gameserver->game->grid);
+}

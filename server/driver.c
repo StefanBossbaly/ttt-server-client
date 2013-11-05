@@ -72,10 +72,18 @@ int main()
 
 					gameserver_init(gameserver, subserver);
 
-					while (1)
+					while (! gameserver_is_finished(gameserver))
 					{
 						gameserver_handle(gameserver);
 					}
+
+					printf("Gameserver is shutting down\n");
+
+					gameserver_close(gameserver);
+
+					free(gameserver);
+
+					exit(EXIT_SUCCESS);
 				}
 				else
 				{

@@ -27,5 +27,7 @@ void gameserver_init(gameserver_t *chatserver, subserver_t *subserver);
 void gameserver_handle(gameserver_t *chatserver);
 player_t gameserver_get_player(gameserver_t *gameserver, int socket_id);
 void gameserver_set_player(gameserver_t *gameserver, int socket_id, player_t player);
+int gameserver_is_finished(gameserver_t *gameserver);
+void gameserver_close(gameserver_t *gameserver);
 
 #endif /* GAMESERVER_H_ */
