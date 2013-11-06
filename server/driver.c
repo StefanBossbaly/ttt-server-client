@@ -14,7 +14,7 @@
 
 int main()
 {
-	if (fork() == 0)
+	/*if (fork() == 0)
 	{
 		server_t *chatserver = (server_t *) malloc(sizeof(server_t));
 		server_init(chatserver, "127.0.0.1", 3701, 10);
@@ -49,9 +49,9 @@ int main()
 		}
 	}
 	else
-	{
+	{*/
 		server_t *gameserver = (server_t *) malloc(sizeof(server_t));
-		server_init(gameserver, "127.0.0.1", 3700, 10);
+		server_init(gameserver, "127.0.0.1", 32600, 10);
 		server_start(gameserver);
 
 		while (1)
@@ -91,7 +91,7 @@ int main()
 				}
 			}
 		}
-	}
+	//}
 
 	return 0;
 }

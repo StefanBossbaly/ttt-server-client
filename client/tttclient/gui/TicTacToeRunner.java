@@ -28,7 +28,7 @@ public class TicTacToeRunner {
 		}
 
 		// Establish a connection
-		final Socket socket = new Socket("localhost", 3700);
+		final Socket socket = new Socket("server1.cs.scranton.edu", 32600);
 
 		TicTacToeSendInterface send = new TicTacToeSendInterface(socket);
 
