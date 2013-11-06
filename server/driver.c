@@ -12,6 +12,10 @@
 #define PORT 8080
 #define BACKLOG 10
 
+/**
+ * Command to connect: ssh bossbalys2@server1.cs.scranton.edu -L 32600:localhost:32600
+ */
+
 int main()
 {
 	/*if (fork() == 0)
