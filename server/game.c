@@ -219,9 +219,9 @@ player_t ttt_check_diagonal_nw(game_t *game, int row, int column)
 
 	for (i = 0; i < game->connect; i++)
 	{
-		if (ttt_is_in_bounds(game, row - i, column - i))
+		if (ttt_is_in_bounds(game, row + i, column - i))
 		{
-			cache[i] = game->grid[row - i][column - i].player;
+			cache[i] = game->grid[row + i][column - i].player;
 		}
 		else
 		{
