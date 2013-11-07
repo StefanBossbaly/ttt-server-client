@@ -114,7 +114,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 		free(broadcast);
 
 		//Check to see if it is end of game
-		if (ttt_has_winner(gameserver->game))
+		if (ttt_is_end_of_game(gameserver->game))
 		{
 			printf("End of game condition!\n");
 

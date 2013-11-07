@@ -184,9 +184,15 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 		}
 
 		if (status == 0) {
-			JOptionPane.showMessageDialog(this, "The game has ended! Player "
-					+ player + " has won!", "Game Ended!",
-					JOptionPane.INFORMATION_MESSAGE);
+			if (player != 0) {
+				JOptionPane.showMessageDialog(this,
+						"The game has ended! Player " + player + " has won!",
+						"Game Ended!", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(this,
+						"The game has ended! It was a draw!", "Game Ended!",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else {
 			JOptionPane.showMessageDialog(this,
 					"The game has ended for unknown reason! Player " + player
