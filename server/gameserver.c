@@ -122,7 +122,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			player_t winner = ttt_winner(gameserver->game);
 
 			//How many characters do we need?
-			length = snprintf(NULL, 0, "END %i %i", 1, winner) + 1;
+			length = snprintf(NULL, 0, "END %i %i", 1, (int) winner) + 1;
 
 			//Allocate the space
 			broadcast = (char *) malloc(length * sizeof(char));
@@ -132,7 +132,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 
 			//TODO this is very bad, implement something better than busy waiting
 			int z;
-			for (z = 0; z < 1000000; z++) { };
+			for (z = 0; z < 100000000; z++) { };
 
 			printf("Broadcasting command: %s\n", broadcast);
 
