@@ -15,6 +15,9 @@
 
 void subserver_init(subserver_t *subserver, int *clients, int size)
 {
+	subserver->handle_recieve = NULL;
+	subserver->handle_disconnect = NULL;
+
 	FD_ZERO(&subserver->master);
 
 	int i;
@@ -30,9 +33,18 @@ void subserver_init(subserver_t *subserver, int *clients, int size)
 	subserver->clients_size = size;
 }
 
-void subserver_reg_handler(subserver_t *subserver, int (*handle_recieve)(void *subserver, int id, char *buf, size_t size), void *data)
+void subserver_reg_rec_handler(subserver_t *subserver, int (*handle_recieve)(void *subserver, int id, char *buf, size_t size))
 {
 	subserver->handle_recieve = handle_recieve;
+}
+
+void subserver_reg_dis_handler(subserver_t *subserver, int (*handle_disconnect)(void *data, int id))
+{
+	subserver->handle_disconnect = handle_disconnect;
+}
+
+void subserver_reg_data(subserver_t *subserver, void *data)
+{
 	subserver->data = data;
 }
 
@@ -78,8 +90,86 @@ void subserver_handle(subserver_t *subserver)
 			//TODO handle a close connection
 			int nbytes = recv(subserver->clients[i], buffer, sizeof(buffer), 0);
 
+			if (nbytes == -1)
+			{
+				perror("Error: Receive failed!");
+				return;
+			}
+
+			//We had a disconnect
+			if (nbytes == 0)
+			{
+				if (subserver->handle_disconnect != NULL)
+				{
+					subserver->handle_disconnect(subserver->data, subserver->clients[i]);
+				}
+				else
+				{
+					printf("Handle disconnect not registered\n");
+				}
+
+				subserver_remove_client(subserver, subserver->clients[i]);
+
+				return;
+			}
+
 			//Call the handler
-			subserver->handle_recieve(subserver->data, subserver->clients[i], buffer, sizeof(buffer));
+			if (subserver->handle_recieve != NULL)
+			{
+				subserver->handle_recieve(subserver->data, subserver->clients[i], buffer, sizeof(buffer));
+			}
+			else
+			{
+				printf("Handle Receive not registered\n");
+			}
+		}
+	}
+}
+
+void subserver_add_client(subserver_t *subserver, int socket_id)
+{
+	if (subserver->clients_size == MAX_CLIENTS)
+	{
+		printf("Can't add client. Limit reached!\n");
+		return;
+	}
+
+	FD_SET(socket_id, &subserver->master);
+
+	subserver->clients[subserver->clients_size] = socket_id;
+	subserver->clients_size++;
+}
+
+void subserver_remove_client(subserver_t *subserver, int socket_id)
+{
+	int location = -1;
+
+	int i;
+	for (i = 0; i < subserver->clients_size; i++)
+	{
+		if (subserver->clients[i] == socket_id)
+		{
+			location = i;
+			break;
+		}
+	}
+
+	//Make sure the socket is managed by us
+	if (location != -1)
+	{
+		//Remove from the client list
+		for (i = location; i < subserver->clients_size - 1; i++)
+		{
+			subserver->clients[i] = subserver->clients[i + 1];
+		}
+		subserver->clients_size--;
+
+		FD_CLR(socket_id, &subserver->master);
+
+		//Close the socket
+		if (close(socket_id) == -1)
+		{
+			perror("Closing connection failed");
 		}
 	}
 }

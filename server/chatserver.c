@@ -54,7 +54,8 @@ void chatserver_init(chatserver_t *chatserver, subserver_t *subserver)
 	chatserver->subserver = subserver;
 
 	//Register for callbacks
-	subserver_reg_handler(subserver, chatserver_handle_recieve, chatserver);
+	subserver_reg_data(subserver, chatserver);
+	subserver_reg_rec_handler(subserver, chatserver_handle_recieve);
 
 	int i;
 	for (i = 0; i < subserver->clients_size; i++)

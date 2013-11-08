@@ -4,6 +4,46 @@
 #include "gameserver.h"
 #include "game.h"
 
+int gameserver_handle_disconnect(void *data, int id)
+{
+	gameserver_t *gameserver = (gameserver_t *) data;
+
+	//Get the player that dc'ed
+	player_t dc = gameserver_get_player(gameserver, id);
+
+	printf("Player %i disconnected. Ending the game\n", (int) dc);
+
+	player_t winner;
+
+	if (dc == PLAYER1)
+	{
+		winner = PLAYER2;
+	}
+	else
+	{
+		winner = PLAYER1;
+	}
+
+	//How many characters do we need?
+	int length = snprintf(NULL, 0, "END %i %i", 1, (int) winner) + 1;
+
+	//Allocate the space
+	char *broadcast = (char *) malloc(length * sizeof(char));
+
+	//Do the string concatenation
+	sprintf(broadcast, "END %i %i", 1, winner);
+
+	printf("Broadcasting command: %s\n", broadcast);
+
+	//Send it to the client
+	subserver_brodcast(gameserver->subserver, broadcast, length);
+
+	free(broadcast);
+
+	return 0;
+
+}
+
 int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 {
 	printf("Game server received command: %s\n", buffer);
@@ -154,7 +194,9 @@ void gameserver_init(gameserver_t *gameserver, subserver_t *subserver)
 	gameserver->subserver = subserver;
 
 	//Register the handler
-	subserver_reg_handler(subserver, gameserver_handle_recieve, gameserver);
+	subserver_reg_data(subserver, gameserver);
+	subserver_reg_rec_handler(subserver, gameserver_handle_recieve);
+	subserver_reg_dis_handler(subserver, gameserver_handle_disconnect);
 
 	//Allocate some space for our game
 	gameserver->game = (game_t *) malloc(sizeof(game_t));
@@ -210,7 +252,7 @@ void gameserver_set_player(gameserver_t *gameserver, int socket_id, player_t pla
 
 int gameserver_is_finished(gameserver_t *gameserver)
 {
-	return ttt_is_end_of_game(gameserver->game);
+	return ttt_is_end_of_game(gameserver->game) || gameserver->subserver->clients_size != 2;
 }
 
 void gameserver_close(gameserver_t *gameserver)

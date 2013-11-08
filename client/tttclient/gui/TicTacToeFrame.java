@@ -195,7 +195,7 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 			}
 		} else {
 			JOptionPane.showMessageDialog(this,
-					"The game has ended for unknown reason! Player " + player
+					"The game has ended because a player disconnected. Player " + player
 							+ " has won!", "Game Ended!",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
