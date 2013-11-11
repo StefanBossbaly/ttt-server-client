@@ -1,4 +1,4 @@
-package tttclient.gui;
+package desktop.gui;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -7,8 +7,8 @@ import java.net.UnknownHostException;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
-import tttclient.serverinterface.TicTacToeSendInterface;
-import tttclient.thread.TicTacToeRecieveThread;
+import base.serverinterface.TicTacToeSendInterface;
+import base.thread.TicTacToeRecieveThread;
 
 /**
  *

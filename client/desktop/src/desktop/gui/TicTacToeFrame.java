@@ -1,15 +1,23 @@
-package tttclient.gui;
+package desktop.gui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
-import tttclient.handler.EndCommandHandler;
-import tttclient.handler.ErrorCommandHandler;
-import tttclient.handler.MoveCommandHandler;
-import tttclient.serverinterface.TicTacToeSendInterface;
+import base.handler.EndCommandHandler;
+import base.handler.ErrorCommandHandler;
+import base.handler.MoveCommandHandler;
+import base.serverinterface.TicTacToeSendInterface;
 
 /*
  Creates the gameboard using JFrame as the GUI

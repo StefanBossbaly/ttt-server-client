@@ -1,12 +1,12 @@
-package tttclient.thread;
+package base.thread;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import tttclient.handler.EndCommandHandler;
-import tttclient.handler.ErrorCommandHandler;
-import tttclient.handler.MoveCommandHandler;
-import tttclient.serverinterface.TicTacToeRecieveInterface;
+import base.handler.EndCommandHandler;
+import base.handler.ErrorCommandHandler;
+import base.handler.MoveCommandHandler;
+import base.serverinterface.TicTacToeRecieveInterface;
 
 public class TicTacToeRecieveThread extends Thread {
 	private Socket socket;

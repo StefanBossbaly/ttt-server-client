@@ -1,4 +1,4 @@
-package tttclient.handler;
+package base.handler;
 
 /**
  * The handler that will receive the callback when the error command is received

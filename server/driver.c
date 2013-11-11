@@ -83,14 +83,28 @@ int main()
 
 					printf("Gameserver is shutting down\n");
 
-					gameserver_close(gameserver);
+					/*gameserver_close(gameserver);
 
 					free(gameserver);
 
-					exit(EXIT_SUCCESS);
+					exit(EXIT_SUCCESS);*/
+
+					while(1)
+					{
+
+					}
 				}
 				else
 				{
+					int i;
+					for (i = 0; i < gameserver->client_size; i++)
+					{
+						if (close(gameserver->clients[i]) == -1)
+						{
+							perror("Closing failed.");
+						}
+					}
+
 					gameserver->client_size = 0;
 				}
 			}

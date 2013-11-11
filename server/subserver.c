@@ -179,7 +179,7 @@ void subserver_brodcast(subserver_t *subserver, const char *command, size_t size
 	int i;
 	for (i = 0; i < subserver->clients_size; i++)
 	{
-		if (send(subserver->clients[i], command, size, 0) == -1)
+		if (send(subserver->clients[i], command, size, MSG_DONTWAIT) == -1)
 		{
 			perror("subserver_brodcast");
 		}
@@ -196,12 +196,12 @@ void subserver_send(subserver_t *subserver, int socket_id, const char *command, 
 
 void subserver_close(subserver_t *subserver)
 {
-	int i;
+	/*int i;
 	for (i = 0; i < subserver->clients_size; i++)
 	{
 		if (close(subserver->clients[i]) == -1)
 		{
 			perror("subserver_close");
 		}
-	}
+	}*/
 }
