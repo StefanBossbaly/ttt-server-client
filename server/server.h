@@ -22,6 +22,7 @@ typedef struct
 void server_init(server_t *server, char *host, int port, int backlog);
 int server_start(server_t *server);
 void server_handle(server_t *server);
+void server_close(server_t *server);
 
 //debug methods
 void print_ip(struct addrinfo *ai);

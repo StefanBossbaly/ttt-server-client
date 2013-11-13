@@ -8,6 +8,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <signal.h>
+
 #define HOST "localhost\0"
 #define PORT 8080
 #define BACKLOG 10
@@ -16,8 +18,39 @@
  * Command to connect: ssh bossbalys2@server1.cs.scranton.edu -L 32600:localhost:32600
  */
 
+server_t *gameserver = NULL;
+
+void chld_signal_handler(int signal)
+{
+	int status;
+	wait(&status);
+
+	printf("Child process is dead with return status %i\n", status);
+}
+
+void int_signal_handler(int signal)
+{
+	printf("Server terminating\n");
+
+	if (gameserver != NULL)
+	{
+		server_close(gameserver);
+	}
+
+	free(gameserver);
+
+	printf("Goodbye!\n");
+
+	exit(EXIT_SUCCESS);
+}
+
 int main()
 {
+	//Register signal callback
+	signal(SIGCHLD, chld_signal_handler);
+	signal(SIGINT, int_signal_handler);
+
+
 	/*if (fork() == 0)
 	{
 		server_t *chatserver = (server_t *) malloc(sizeof(server_t));
@@ -54,7 +87,7 @@ int main()
 	}
 	else
 	{*/
-		server_t *gameserver = (server_t *) malloc(sizeof(server_t));
+		gameserver = (server_t *) malloc(sizeof(server_t));
 		server_init(gameserver, "127.0.0.1", 32600, 10);
 		server_start(gameserver);
 
@@ -83,16 +116,11 @@ int main()
 
 					printf("Gameserver is shutting down\n");
 
-					/*gameserver_close(gameserver);
+					gameserver_close(gameserver);
 
 					free(gameserver);
 
-					exit(EXIT_SUCCESS);*/
-
-					while(1)
-					{
-
-					}
+					exit(EXIT_SUCCESS);
 				}
 				else
 				{
@@ -101,7 +129,7 @@ int main()
 					{
 						if (close(gameserver->clients[i]) == -1)
 						{
-							perror("Closing failed.");
+							perror("Closing failed");
 						}
 					}
 

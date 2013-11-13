@@ -74,6 +74,11 @@ void subserver_handle(subserver_t *subserver)
 	//Let's see has unhandled commands
 	if (select(subserver_max_fd(subserver) + 1, &temp, NULL, NULL, NULL) == -1)
 	{
+		if (errno == EINTR)
+		{
+			return;
+		}
+
 		printf("Error: Subserver select failed!: %s", strerror(errno));
 		exit(EXIT_FAILURE);
 	}

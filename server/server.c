@@ -118,6 +118,11 @@ void server_handle(server_t *server)
 	//Check to see if our listening socket needs some processing time
 	if (select(server->socket_id + 1, &temp, NULL, NULL, NULL) == -1)
 	{
+		if (errno == EINTR)
+		{
+			return;
+		}
+
 		perror("select");
 		exit(EXIT_FAILURE);
 	}
@@ -146,6 +151,17 @@ void server_handle(server_t *server)
 		inet_ntop(client_addr.ss_family, get_in_addr((struct sockaddr *) &client_addr), client_printable_addr, sizeof client_printable_addr);
 		printf("server: connection from %s at port %d\n", client_printable_addr, ((struct sockaddr_in*) &client_addr)->sin_port);
 	}
+}
+
+void server_close(server_t *server)
+{
+	int i;
+	for (i = 0; i < server->client_size; i++)
+	{
+		close(server->clients[i]);
+	}
+
+	close(server->socket_id);
 }
 
 void print_ip(struct addrinfo *ai)
