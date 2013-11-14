@@ -34,12 +34,15 @@ public class MenuActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View view) {
+		Intent i = null;
 		switch (view.getId()) {
 		case R.id.button_about:
-			Intent i = new Intent(this, AboutActivity.class);
+			i = new Intent(this, AboutActivity.class);
 			startActivity(i);
 			break;
 		case R.id.button_play:
+			i = new Intent(this, GameActivity.class);
+			startActivity(i);
 			break;
 		}
 	}
