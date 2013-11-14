@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import base.handler.EndCommandHandler;
 import base.handler.ErrorCommandHandler;
 import base.handler.MoveCommandHandler;
+
+import com.google.code.regexp.Matcher;
+import com.google.code.regexp.Pattern;
 
 /**
  * Class that is the link between the server and the client using the designed
