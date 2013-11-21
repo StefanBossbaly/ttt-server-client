@@ -8,6 +8,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <sys/wait.h>
+
 #include <signal.h>
 
 #define HOST "localhost\0"
@@ -88,7 +90,7 @@ int main()
 	else
 	{*/
 		gameserver = (server_t *) malloc(sizeof(server_t));
-		server_init(gameserver, "192.168.1.7", 32600, 10);
+		server_init(gameserver, "192.168.1.3", 32600, 10);
 		server_start(gameserver);
 
 		while (1)
