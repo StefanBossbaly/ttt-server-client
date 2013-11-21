@@ -5,8 +5,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -33,12 +37,17 @@ public class GameActivity extends Activity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		final String host = prefs.getString("host", "localhost");
+		final int port = Integer.parseInt(prefs.getString("port", "32600"));
 
 		Thread thread = new Thread() {
 			@Override
 			public void run() {
 				try {
-					socket = new Socket("192.168.1.7", 32600);
+					
+					socket = new Socket(host, port);
 					sendInterface = new TicTacToeSendInterface(socket);
 					recieveThread = new TicTacToeRecieveThread(socket,
 							GameActivity.this, GameActivity.this,

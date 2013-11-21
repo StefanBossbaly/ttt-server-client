@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_host_display_name">Host</string>
+    <string name="pref_default_host_name">localhost</string>
+   	<string name="pref_port_display_name">Port</string>
+    <string name="pref_default_port">32600</string>
+
+</resources>
