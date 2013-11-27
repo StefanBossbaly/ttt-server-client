@@ -16,10 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
-public class MainGUI {
+import base.handler.MessageCommandHandler;
+import base.serverinterface.ChatSendInterface;
+
+public class MainGUI implements MessageCommandHandler {
 
 	String appName = "Chat";
 	MainGUI mainGUI;
@@ -30,15 +31,11 @@ public class MainGUI {
 	JTextField usernameChooser;
 	JFrame preFrame;
 
-	/*
-	 * public static void main(String[] args) { SwingUtilities.invokeLater(new
-	 * Runnable() {
-	 * 
-	 * @Override public void run() { try { UIManager.setLookAndFeel(UIManager
-	 * .getSystemLookAndFeelClassName()); } catch (Exception e) {
-	 * e.printStackTrace(); } MainGUI mainGUI = new MainGUI();
-	 * mainGUI.preDisplay(); } }); }
-	 */
+	private ChatSendInterface sendInterface;
+
+	public MainGUI(ChatSendInterface sendInterface) {
+		this.sendInterface = sendInterface;
+	}
 
 	public void preDisplay() {
 		newFrame.setVisible(false);
@@ -120,8 +117,7 @@ public class MainGUI {
 				chatBox.setText("Cleared all messages\n");
 				messageBox.setText("");
 			} else {
-				chatBox.append("<" + username + ">:  " + messageBox.getText()
-						+ "\n");
+				sendInterface.sendBroadcastCommand(messageBox.getText());
 				messageBox.setText("");
 			}
 			messageBox.requestFocusInWindow();
@@ -141,5 +137,10 @@ public class MainGUI {
 			}
 		}
 
+	}
+
+	@Override
+	public void handMessageCommand(String name, String message) {
+		chatBox.append("<" + name + ">:  " + message + "\n");
 	}
 }

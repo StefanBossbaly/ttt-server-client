@@ -122,6 +122,7 @@ public class TicTacToeRecieveInterface {
 
 			// Read the message into the buffer
 			if (reader.read(buffer, 0, buffer.length) == -1) {
+				System.out.println("End of stream reached");
 				return;
 			}
 

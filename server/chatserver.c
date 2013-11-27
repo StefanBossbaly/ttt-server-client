@@ -24,13 +24,13 @@ int chatserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 		printf("Broadcast called. Alias is %s\n", alias);
 
 		//How many characters do we need?
-		int length = snprintf(NULL, 0, "MESSAGE %s %s", alias, message) + 1;
+		int length = snprintf(NULL, 0, "MESSAGE %s, %s", alias, message) + 1;
 
 		//Allocate the space
 		char *broadcast = (char *) malloc(length * sizeof(char));
 
 		//Do the string concatenation
-		sprintf(broadcast, "MESSAGE %s %s\n", alias, message);
+		sprintf(broadcast, "MESSAGE %s, %s\n", alias, message);
 
 		//Send it to all of our clients
 		subserver_brodcast(subserver, broadcast, length);

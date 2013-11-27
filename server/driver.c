@@ -53,10 +53,10 @@ int main()
 	signal(SIGINT, int_signal_handler);
 
 
-	/*if (fork() == 0)
+	if (fork() == 0)
 	{
 		server_t *chatserver = (server_t *) malloc(sizeof(server_t));
-		server_init(chatserver, "127.0.0.1", 3701, 10);
+		server_init(chatserver, "192.168.1.3", 32601, 10);
 		server_start(chatserver);
 
 		while (1)
@@ -82,13 +82,22 @@ int main()
 				}
 				else
 				{
+					int i;
+					for (i = 0; i < gameserver->client_size; i++)
+					{
+						if (close(gameserver->clients[i]) == -1)
+						{
+							perror("Closing failed");
+						}
+					}
+
 					chatserver->client_size = 0;
 				}
 			}
 		}
 	}
 	else
-	{*/
+	{
 		gameserver = (server_t *) malloc(sizeof(server_t));
 		server_init(gameserver, "192.168.1.3", 32600, 10);
 		server_start(gameserver);
@@ -139,7 +148,7 @@ int main()
 				}
 			}
 		}
-	//}
+	}
 
 	return 0;
 }

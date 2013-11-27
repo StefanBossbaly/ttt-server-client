@@ -7,7 +7,9 @@ import java.net.UnknownHostException;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import base.serverinterface.ChatSendInterface;
 import base.serverinterface.TicTacToeSendInterface;
+import base.thread.ChatRecieveThread;
 import base.thread.TicTacToeRecieveThread;
 
 /**
@@ -41,5 +43,17 @@ public class TicTacToeRunner {
 		TicTacToeRecieveThread thread = new TicTacToeRecieveThread(socket,
 				frame, frame, frame);
 		thread.start();
+		
+		final Socket chatSocket = new Socket("tttserver.dyndns.org", 32601);
+		
+		ChatSendInterface chatSend = new ChatSendInterface(chatSocket);
+		MainGUI mainGUI = new MainGUI(chatSend);
+		mainGUI.preDisplay();
+		mainGUI.display();
+		
+		
+		ChatRecieveThread chatThread = new ChatRecieveThread(chatSocket, mainGUI);
+		chatThread.start();
+
 	}
 }
