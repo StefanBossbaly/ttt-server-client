@@ -2,6 +2,8 @@
 #include "subserver.h"
 #include "chatserver.h"
 #include "gameserver.h"
+#include "player_record.h"
+#include "util/semaphore.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +23,7 @@
  */
 
 server_t *gameserver = NULL;
+indexed_file_t *database = NULL;
 
 void chld_signal_handler(int signal)
 {
@@ -40,115 +43,261 @@ void int_signal_handler(int signal)
 	}
 
 	free(gameserver);
+	free(database);
 
 	printf("Goodbye!\n");
 
 	exit(EXIT_SUCCESS);
 }
 
-int main()
+void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 {
-	//Register signal callback
-	signal(SIGCHLD, chld_signal_handler);
-	signal(SIGINT, int_signal_handler);
-
-
-	if (fork() == 0)
+	int i;
+	for (i = 0; i < gameserver->player_size; i++)
 	{
-		server_t *chatserver = (server_t *) malloc(sizeof(server_t));
-		server_init(chatserver, "192.168.1.3", 32601, 10);
-		server_start(chatserver);
+		int player_id = gameserver->players[i].player_id;
 
-		while (1)
+		//See if the index exists if it doesn't create it
+		if (index_get_index(file, player_id) == -1)
 		{
-			server_handle(chatserver);
+			//Create the record
+			player_record_t record;
 
-			if (chatserver->client_size == 2)
+			//TODO have user tell us who he is
+			player_rec_init(&record, player_id, "Joe", "Smith");
+
+			//Set the number of ties to 1
+			record.ties = 1;
+
+			//Add the record to the database
+			index_add(file, player_id, &record);
+		}
+		else
+		{
+			//Create a buffer
+			player_record_t record;
+
+			//Load the record from the database to the buffer
+			index_get_data(file, player_id, &record);
+
+			//Increment the ties variable
+			record.ties++;
+
+			//Save it back to the database
+			index_update(file, player_id, &record);
+		}
+	}
+}
+
+void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner)
+{
+	int i;
+	for (i = 0; i < gameserver->player_size; i++)
+	{
+		int player_id = gameserver->players[i].player_id;
+
+		//See if the current player is a winner
+		if (gameserver->players[i].player == winner)
+		{
+			//See if the index exists if it doesn't create it
+			if (index_get_index(file, player_id) == -1)
 			{
-				subserver_t *subserver = (subserver_t *) malloc(sizeof(subserver_t));
+				//Create the record
+				player_record_t record;
 
-				subserver_init(subserver, chatserver->clients, chatserver->client_size);
+				//TODO have user tell us who he is
+				player_rec_init(&record, player_id, "Joe", "Smith");
 
-				if (fork() == 0)
-				{
-					chatserver_t *chatserver = (chatserver_t *) malloc(sizeof(chatserver_t));
+				//Set the number of ties to 1
+				record.wins = 1;
 
-					chatserver_init(chatserver, subserver);
+				//Add the record to the database
+				index_add(file, player_id, &record);
+			}
+			else
+			{
+				//Create a buffer
+				player_record_t record;
 
-					while (1)
-					{
-						chatserver_handle(chatserver);
-					}
-				}
-				else
-				{
-					int i;
-					for (i = 0; i < gameserver->client_size; i++)
-					{
-						if (close(gameserver->clients[i]) == -1)
-						{
-							perror("Closing failed");
-						}
-					}
+				//Load the record from the database to the buffer
+				index_get_data(file, player_id, &record);
 
-					chatserver->client_size = 0;
-				}
+				//Increment the ties variable
+				record.wins++;
+
+				//Save it back to the database
+				index_update(file, player_id, &record);
 			}
 		}
+		else
+		{
+			//See if the index exists if it doesn't create it
+			if (index_get_index(file, player_id) == -1)
+			{
+				//Create the record
+				player_record_t record;
+
+				//TODO have user tell us who he is
+				player_rec_init(&record, player_id, "Joe", "Smith");
+
+				//Set the number of ties to 1
+				record.losses = 1;
+
+				//Add the record to the database
+				index_add(file, player_id, &record);
+			}
+			else
+			{
+				//Create a buffer
+				player_record_t record;
+
+				//Load the record from the database to the buffer
+				index_get_data(file, player_id, &record);
+
+				//Increment the ties variable
+				record.losses++;
+
+				//Save it back to the database
+				index_update(file, player_id, &record);
+			}
+		}
+	}
+}
+
+void update_stats(gameserver_t *gameserver, indexed_file_t *file)
+{
+	//Get the winner
+	player_t winner = ttt_winner(gameserver->game);
+
+	//See if the game ended in a draw
+	if (winner == NEITHER)
+	{
+		save_draw(gameserver, file);
 	}
 	else
 	{
-		gameserver = (server_t *) malloc(sizeof(server_t));
-		server_init(gameserver, "192.168.1.3", 32600, 10);
-		server_start(gameserver);
+		save_winner(gameserver, file, winner);
+	}
+}
 
-		while (1)
+int main()
+{
+//Register signal callback
+signal(SIGCHLD, chld_signal_handler);
+signal(SIGINT, int_signal_handler);
+
+if (fork() == 0)
+{
+	server_t *chatserver = (server_t *) malloc(sizeof(server_t));
+	server_init(chatserver, "192.168.1.3", 32601, 10);
+	server_start(chatserver);
+
+	while (1)
+	{
+		server_handle(chatserver);
+
+		if (chatserver->client_size == 2)
 		{
-			server_handle(gameserver);
+			subserver_t *subserver = (subserver_t *) malloc(sizeof(subserver_t));
 
-			if (gameserver->client_size == 2)
+			subserver_init(subserver, chatserver->clients, chatserver->client_size);
+
+			if (fork() == 0)
 			{
-				subserver_t *subserver = (subserver_t *) malloc(sizeof(subserver_t));
+				chatserver_t *chatserver = (chatserver_t *) malloc(sizeof(chatserver_t));
 
-				subserver_init(subserver, gameserver->clients, gameserver->client_size);
+				chatserver_init(chatserver, subserver);
 
-				if (fork() == 0)
+				while (1)
 				{
-					printf("Creating game server\n");
-
-					gameserver_t *gameserver = (gameserver_t *) malloc(sizeof(gameserver_t));
-
-					gameserver_init(gameserver, subserver);
-
-					while (! gameserver_is_finished(gameserver))
-					{
-						gameserver_handle(gameserver);
-					}
-
-					printf("Gameserver is shutting down\n");
-
-					gameserver_close(gameserver);
-
-					free(gameserver);
-
-					exit(EXIT_SUCCESS);
+					chatserver_handle(chatserver);
 				}
-				else
+			}
+			else
+			{
+				int i;
+				for (i = 0; i < gameserver->client_size; i++)
 				{
-					int i;
-					for (i = 0; i < gameserver->client_size; i++)
+					if (close(gameserver->clients[i]) == -1)
 					{
-						if (close(gameserver->clients[i]) == -1)
-						{
-							perror("Closing failed");
-						}
+						perror("Closing failed");
 					}
-
-					gameserver->client_size = 0;
 				}
+
+				chatserver->client_size = 0;
 			}
 		}
 	}
+}
+else
+{
+	//Declare our database
+	database = (indexed_file_t *) malloc(sizeof(indexed_file_t));
+	index_init(database, "stats.master", "stats.index", sizeof(player_record_t));
 
-	return 0;
+	//Init and start the listening server
+	gameserver = (server_t *) malloc(sizeof(server_t));
+	server_init(gameserver, "192.168.1.3", 32600, 10);
+	server_start(gameserver);
+
+	while (1)
+	{
+		server_handle(gameserver);
+
+		if (gameserver->client_size == 2)
+		{
+			subserver_t *subserver = (subserver_t *) malloc(sizeof(subserver_t));
+
+			subserver_init(subserver, gameserver->clients, gameserver->client_size);
+
+			if (fork() == 0)
+			{
+				printf("Creating game server\n");
+
+				gameserver_t *gameserver = (gameserver_t *) malloc(sizeof(gameserver_t));
+
+				gameserver_init(gameserver, subserver);
+
+				while (!gameserver_is_finished(gameserver))
+				{
+					gameserver_handle(gameserver);
+				}
+
+				printf("Game is over saving stats\n");
+
+				//Open a database transaction
+				index_open_transaction(database);
+
+				//Save the statics
+				update_stats(gameserver, database);
+
+				//Close a database transaction
+				index_close_transaction(database);
+
+				printf("Gameserver is shutting down\n");
+
+				gameserver_close(gameserver);
+
+				free(gameserver);
+
+				exit(EXIT_SUCCESS);
+			}
+			else
+			{
+				int i;
+				for (i = 0; i < gameserver->client_size; i++)
+				{
+					if (close(gameserver->clients[i]) == -1)
+					{
+						perror("Closing failed");
+					}
+				}
+
+				gameserver->client_size = 0;
+			}
+		}
+	}
+}
+
+return 0;
 }
