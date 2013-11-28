@@ -213,6 +213,7 @@ void gameserver_init(gameserver_t *gameserver, subserver_t *subserver)
 	//Init our game
 	ttt_init_game(gameserver->game, ROWS, COLUMNS, CONNECT, grid);
 
+	//Add the subservers clients to our game
 	for (i = 0; i < subserver->clients_size; i++)
 	{
 		gameserver_set_player(gameserver, subserver->clients[i], i + 1);
@@ -220,6 +221,10 @@ void gameserver_init(gameserver_t *gameserver, subserver_t *subserver)
 
 	//Make sure all things are zero
 	gameserver->player_size = subserver->clients_size;
+
+	//Let our clients know that the game has started!
+	char command[] = "START";
+	subserver_brodcast(gameserver->subserver, command, sizeof(command));
 }
 
 void gameserver_handle(gameserver_t *gameserver)
