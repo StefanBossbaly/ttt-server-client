@@ -9,7 +9,7 @@ int gameserver_handle_disconnect(void *data, int id)
 	gameserver_t *gameserver = (gameserver_t *) data;
 
 	//Get the player that dc'ed
-	player_t dc = gameserver_get_player(gameserver, id);
+	player_t dc = gameserver_get_player(gameserver, id)->player;
 
 	printf("Player %i disconnected. Ending the game\n", (int) dc);
 
@@ -44,7 +44,7 @@ int gameserver_handle_disconnect(void *data, int id)
 
 }
 
-int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
+int gameserver_handle_recieve(void *data, int socket_id, char *buffer, size_t size)
 {
 	printf("Game server received command: %s\n", buffer);
 
@@ -56,7 +56,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 	{
 		printf("MOVE COMMAND x = %i and y = %i\n", x, y);
 
-		player_t player = gameserver_get_player(gameserver, id);
+		player_t player = gameserver_get_player(gameserver, socket_id)->player;
 
 		printf("Player id as %i \n", player);
 
@@ -77,7 +77,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			printf("Sending command: %s\n", broadcast);
 
 			//Send it to the client
-			subserver_send(gameserver->subserver, id, broadcast, length);
+			subserver_send(gameserver->subserver, socket_id, broadcast, length);
 
 			free(broadcast);
 
@@ -101,7 +101,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			printf("Sending command: %s\n", broadcast);
 
 			//Send it to the client
-			subserver_send(gameserver->subserver, id, broadcast, length);
+			subserver_send(gameserver->subserver, socket_id, broadcast, length);
 
 			free(broadcast);
 
@@ -125,7 +125,7 @@ int gameserver_handle_recieve(void *data, int id, char *buffer, size_t size)
 			printf("Sending command: %s\n", broadcast);
 
 			//Send it to the client
-			subserver_send(gameserver->subserver, id, broadcast, length);
+			subserver_send(gameserver->subserver, socket_id, broadcast, length);
 
 			free(broadcast);
 
@@ -228,14 +228,14 @@ void gameserver_handle(gameserver_t *gameserver)
 	subserver_handle(gameserver->subserver);
 }
 
-player_t gameserver_get_player(gameserver_t *gameserver, int socket_id)
+player_soc_t *gameserver_get_player(gameserver_t *gameserver, int socket_id)
 {
 	int i;
 	for (i = 0; i < gameserver->player_size; i++)
 	{
 		if (gameserver->players[i].socket_id == socket_id)
 		{
-			return gameserver->players[i].player;
+			return &gameserver->players[i];
 		}
 	}
 
