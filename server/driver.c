@@ -3,6 +3,7 @@
 #include "chatserver.h"
 #include "gameserver.h"
 #include "player_record.h"
+#include "indexed_file.h"
 #include "util/semaphore.h"
 
 #include <stdio.h>
@@ -50,6 +51,13 @@ void int_signal_handler(int signal)
 	exit(EXIT_SUCCESS);
 }
 
+void print_player_record(player_record_t *record)
+{
+	printf("Record ID: %i\n", record->player_id);
+	printf("Record Name: %s %s\n", record->first_name, record->last_name);
+	printf("Recoard Stats %i-%i-%i\n", record->wins, record->ties, record->losses);
+}
+
 void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 {
 	int i;
@@ -69,6 +77,9 @@ void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 			//Set the number of ties to 1
 			record.ties = 1;
 
+			printf("Adding record .... \n");
+			print_player_record(&record);
+
 			//Add the record to the database
 			index_add(file, player_id, &record);
 		}
@@ -82,6 +93,9 @@ void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 
 			//Increment the ties variable
 			record.ties++;
+
+			printf("Saving record .... \n");
+			print_player_record(&record);
 
 			//Save it back to the database
 			index_update(file, player_id, &record);
@@ -111,6 +125,9 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				//Set the number of ties to 1
 				record.wins = 1;
 
+				printf("Adding record .... \n");
+				print_player_record(&record);
+
 				//Add the record to the database
 				index_add(file, player_id, &record);
 			}
@@ -124,6 +141,9 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 
 				//Increment the ties variable
 				record.wins++;
+
+				printf("Saving record .... \n");
+				print_player_record(&record);
 
 				//Save it back to the database
 				index_update(file, player_id, &record);
@@ -143,6 +163,9 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				//Set the number of ties to 1
 				record.losses = 1;
 
+				printf("Adding record .... \n");
+				print_player_record(&record);
+
 				//Add the record to the database
 				index_add(file, player_id, &record);
 			}
@@ -156,6 +179,9 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 
 				//Increment the ties variable
 				record.losses++;
+
+				printf("Saving record .... \n");
+				print_player_record(&record);
 
 				//Save it back to the database
 				index_update(file, player_id, &record);
