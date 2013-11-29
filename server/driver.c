@@ -10,14 +10,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include <sys/wait.h>
-
 #include <signal.h>
+
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/wait.h>
 
 #define HOST "localhost\0"
 #define PORT 8080
 #define BACKLOG 10
+
+const char *key = "/home/stefan/git/ttt/server/tttserver.o\0";
 
 /**
  * Command to connect: ssh bossbalys2@server1.cs.scranton.edu -L 32600:localhost:32600
@@ -266,6 +269,14 @@ else
 	server_init(gameserver, "192.168.1.3", 32600, 10);
 	server_start(gameserver);
 
+	//Init our semaphore
+	semaphore_t *mutex = (semaphore_t *) malloc(sizeof(semaphore_t));
+	if (semaphore_init(mutex, 1, ftok("semaphore.txt", 'b')) == -1)
+	{
+		printf("Error can not init semaphore\n");
+		exit(EXIT_FAILURE);
+	}
+
 	while (1)
 	{
 		server_handle(gameserver);
@@ -291,6 +302,12 @@ else
 
 				printf("Game is over saving stats\n");
 
+				//Make sure that we can enter
+				if (semaphore_wait(mutex) == -1)
+				{
+					exit(EXIT_FAILURE);
+				}
+
 				//Open a database transaction
 				index_open_transaction(database);
 
@@ -299,6 +316,12 @@ else
 
 				//Close a database transaction
 				index_close_transaction(database);
+
+				//Tell other processes that we are done
+				if (semaphore_signal(mutex) == -1)
+				{
+					exit(EXIT_FAILURE);
+				}
 
 				printf("Gameserver is shutting down\n");
 
