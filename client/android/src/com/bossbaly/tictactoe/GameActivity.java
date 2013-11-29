@@ -5,12 +5,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,12 +16,13 @@ import android.widget.Toast;
 import base.handler.EndCommandHandler;
 import base.handler.ErrorCommandHandler;
 import base.handler.MoveCommandHandler;
+import base.handler.StartCommandHandler;
 import base.serverinterface.TicTacToeRecieveInterface;
 import base.serverinterface.TicTacToeSendInterface;
 import base.thread.TicTacToeRecieveThread;
 
 public class GameActivity extends Activity implements OnClickListener,
-		MoveCommandHandler, ErrorCommandHandler, EndCommandHandler {
+		MoveCommandHandler, ErrorCommandHandler, EndCommandHandler, StartCommandHandler {
 
 	private Button button[] = new Button[9];
 
@@ -51,7 +50,7 @@ public class GameActivity extends Activity implements OnClickListener,
 					sendInterface = new TicTacToeSendInterface(socket);
 					recieveThread = new TicTacToeRecieveThread(socket,
 							GameActivity.this, GameActivity.this,
-							GameActivity.this);
+							GameActivity.this, GameActivity.this);
 					recieveThread.start();
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
@@ -203,5 +202,11 @@ public class GameActivity extends Activity implements OnClickListener,
 			}
 		});
 
+	}
+
+	@Override
+	public void handleStartCommand() {
+		// TODO Auto-generated method stub
+		
 	}
 }
