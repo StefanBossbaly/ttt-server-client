@@ -260,7 +260,7 @@ int gameserver_handle_recieve(void *data, int socket_id, char *buffer, size_t si
 			//Get the winner
 			player_t winner = ttt_winner(gameserver->game);
 
-			gameserver_broadcast_end(gameserver, 1, winner);
+			gameserver_broadcast_end(gameserver, 0, winner);
 		}
 
 		return 0;
