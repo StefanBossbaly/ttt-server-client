@@ -57,29 +57,29 @@ int semaphore_init(semaphore_t *semaphore, int value, int key)
 
 		//Wait for the other process to init the semaphore
 		int i;
-        for (i = 0; i < MAX_RETRIES && !ready; i++)
-        {
-        	//Get statics of the semaphore
-        	semctl(semid, 0, IPC_STAT, arg);
+		for (i = 0; i < MAX_RETRIES && !ready; i++)
+		{
+			//Get statics of the semaphore
+			semctl(semid, 0, IPC_STAT, arg);
 
-        	//Check to see if the semaphore was created
-            if (arg.buf->sem_otime != 0)
-            {
-                ready = 1;
-            }
-            else
-            {
-                sleep(1);
-            }
-        }
+			//Check to see if the semaphore was created
+			if (arg.buf->sem_otime != 0)
+			{
+				ready = 1;
+			}
+			else
+			{
+				sleep(1);
+			}
+		}
 
-        if (!ready)
-        {
-            errno = ETIME;
-            return -1;
-        }
+		if (!ready)
+		{
+			errno = ETIME;
+			return -1;
+		}
 
-        semaphore->id = semid;
+		semaphore->id = semid;
 	}
 
 	return -1;
@@ -93,20 +93,28 @@ void semaphore_remove(semaphore_t *semaphore)
 
 void semaphore_wait(semaphore_t *semaphore)
 {
-	struct sembuf p_buf;
-	p_buf.sem_num = 0;
-	p_buf.sem_op = -1;	     // subtract 1 indicates P
-	p_buf.sem_flg = 0;
+	struct sembuf sb;
 
-	semop(semaphore->id, &p_buf, 1);
+	//The one and only semaphore
+	sb.sem_num = 0;
+	//Subtract one from the semaphore
+	sb.sem_op = -1;
+	//Just in case we die the kernel will undo our changes
+	sb.sem_flg = SEM_UNDO;
+
+	semop(semaphore->id, &sb, 1);
 }
 
 void semaphore_signal(semaphore_t *semaphore)
 {
-	struct sembuf v_buf;
-	v_buf.sem_num = 0;
-	v_buf.sem_op = 1;          // add 1 indicates V
-	v_buf.sem_flg = 0;
+	struct sembuf sb;
 
-	semop(semaphore->id, &v_buf, 1);
+	//The one and only semaphore
+	sb.sem_num = 0;
+	//Add one to the semaphore
+	sb.sem_op = 1;
+	//Just in case we die the kernel will undo our changes
+	sb.sem_flg = SEM_UNDO;
+
+	semop(semaphore->id, &sb, 1);
 }
