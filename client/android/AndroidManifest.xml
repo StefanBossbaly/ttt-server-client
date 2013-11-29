@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.bossbaly.tictactoe.MenuActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,10 +27,12 @@
         </activity>
         <activity
             android:name="com.bossbaly.tictactoe.GameActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_game" >
         </activity>
         <activity
             android:name="com.bossbaly.tictactoe.SettingsActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_settings" >
         </activity>
     </application>
