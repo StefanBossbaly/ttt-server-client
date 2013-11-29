@@ -100,7 +100,7 @@ int server_start(server_t *server)
 		return 0;
 	}
 
-	printf("Error: Could not create socket");
+	printf("Error: Could not create socket\n");
 	exit(EXIT_FAILURE);
 
 	return 0;
