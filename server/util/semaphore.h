@@ -17,7 +17,7 @@ typedef struct
 
 int semaphore_init(semaphore_t *semaphore, int value, int key);
 void semaphore_remove(semaphore_t *semaphore);
-void semaphore_wait(semaphore_t *semaphore);
-void semaphore_signal(semaphore_t *semaphore);
+int semaphore_wait(semaphore_t *semaphore);
+int semaphore_signal(semaphore_t *semaphore);
 
 #endif /* SEMAPHORE_H_ */

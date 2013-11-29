@@ -1,12 +1,10 @@
 #include "semaphore.h"
 
-#ifdef SEMAPHORE_DEBUG
 #include <stdio.h>
-#endif
-
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
@@ -29,6 +27,7 @@ int semaphore_init(semaphore_t *semaphore, int value, int key)
 	//We got to the address first
 	if (semid >= 0)
 	{
+		sb.sem_num = 0;
 		sb.sem_op = 1;
 		sb.sem_flg = 0;
 		arg.val = 1;
@@ -41,6 +40,7 @@ int semaphore_init(semaphore_t *semaphore, int value, int key)
 		}
 
 		semaphore->id = semid;
+		return 0;
 	}
 	else if (errno == EEXIST)
 	{
@@ -51,7 +51,10 @@ int semaphore_init(semaphore_t *semaphore, int value, int key)
 
 		//Error happened check errno
 		if (semid < 0)
+		{
+			perror("semop");
 			return -1;
+		}
 
 		arg.buf = &buf;
 
@@ -76,12 +79,15 @@ int semaphore_init(semaphore_t *semaphore, int value, int key)
 		if (!ready)
 		{
 			errno = ETIME;
+			perror("semop");
 			return -1;
 		}
 
 		semaphore->id = semid;
+		return 0;
 	}
 
+	perror("semget");
 	return -1;
 }
 
@@ -91,7 +97,7 @@ void semaphore_remove(semaphore_t *semaphore)
 	semctl(semaphore->id, 0, IPC_RMID, arg);
 }
 
-void semaphore_wait(semaphore_t *semaphore)
+int semaphore_wait(semaphore_t *semaphore)
 {
 	struct sembuf sb;
 
@@ -102,10 +108,16 @@ void semaphore_wait(semaphore_t *semaphore)
 	//Just in case we die the kernel will undo our changes
 	sb.sem_flg = SEM_UNDO;
 
-	semop(semaphore->id, &sb, 1);
+	if (semop(semaphore->id, &sb, 1) == -1)
+	{
+		perror("semop failed to wait");
+		return -1;
+	}
+
+	return 0;
 }
 
-void semaphore_signal(semaphore_t *semaphore)
+int semaphore_signal(semaphore_t *semaphore)
 {
 	struct sembuf sb;
 
@@ -116,5 +128,11 @@ void semaphore_signal(semaphore_t *semaphore)
 	//Just in case we die the kernel will undo our changes
 	sb.sem_flg = SEM_UNDO;
 
-	semop(semaphore->id, &sb, 1);
+	if (semop(semaphore->id, &sb, 1) == -1)
+	{
+		perror("semop failed to signal");
+		return -1;
+	}
+
+	return 0;
 }
