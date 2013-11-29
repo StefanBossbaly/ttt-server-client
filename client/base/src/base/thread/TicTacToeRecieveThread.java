@@ -6,6 +6,7 @@ import java.net.Socket;
 import base.handler.EndCommandHandler;
 import base.handler.ErrorCommandHandler;
 import base.handler.MoveCommandHandler;
+import base.handler.StartCommandHandler;
 import base.serverinterface.TicTacToeRecieveInterface;
 
 public class TicTacToeRecieveThread extends Thread {
@@ -13,15 +14,17 @@ public class TicTacToeRecieveThread extends Thread {
 	private MoveCommandHandler moveHandler;
 	private ErrorCommandHandler errorHandler;
 	private EndCommandHandler endHandler;
+	private StartCommandHandler startHandler;
 
 	public TicTacToeRecieveThread(Socket socket,
 			MoveCommandHandler moveHandler, ErrorCommandHandler errorHandler,
-			EndCommandHandler endHandler) {
+			EndCommandHandler endHandler, StartCommandHandler startHandler) {
 
 		this.socket = socket;
 		this.moveHandler = moveHandler;
 		this.errorHandler = errorHandler;
 		this.endHandler = endHandler;
+		this.startHandler = startHandler;
 	}
 
 	public void run() {
@@ -33,6 +36,7 @@ public class TicTacToeRecieveThread extends Thread {
 			recieveInterface.registerMoveCommandHandler(this.moveHandler);
 			recieveInterface.registerErrorCommandHandler(this.errorHandler);
 			recieveInterface.registerEndCommandHandler(this.endHandler);
+			recieveInterface.registerStartCommandHandler(this.startHandler);
 
 			while (true) {
 				// See if we are ready for input

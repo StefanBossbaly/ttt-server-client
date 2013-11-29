@@ -30,7 +30,7 @@ public class TicTacToeRunner {
 		}
 
 		// Establish a connection
-		final Socket socket = new Socket("tttserver.dyndns.org", 32600);
+		final Socket socket = new Socket("192.168.1.3", 32600);
 
 		TicTacToeSendInterface send = new TicTacToeSendInterface(socket);
 
@@ -41,10 +41,10 @@ public class TicTacToeRunner {
 
 		// Start listening for server responses
 		TicTacToeRecieveThread thread = new TicTacToeRecieveThread(socket,
-				frame, frame, frame);
+				frame, frame, frame, frame);
 		thread.start();
 		
-		final Socket chatSocket = new Socket("tttserver.dyndns.org", 32601);
+		final Socket chatSocket = new Socket("192.168.1.3", 32601);
 		
 		ChatSendInterface chatSend = new ChatSendInterface(chatSocket);
 		MainGUI mainGUI = new MainGUI(chatSend);

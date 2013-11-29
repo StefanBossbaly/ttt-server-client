@@ -17,13 +17,14 @@ import javax.swing.JPanel;
 import base.handler.EndCommandHandler;
 import base.handler.ErrorCommandHandler;
 import base.handler.MoveCommandHandler;
+import base.handler.StartCommandHandler;
 import base.serverinterface.TicTacToeSendInterface;
 
 /*
  Creates the gameboard using JFrame as the GUI
  */
 public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
-		ErrorCommandHandler, EndCommandHandler {
+		ErrorCommandHandler, EndCommandHandler, StartCommandHandler {
 	private TicTacToeSendInterface sendInterface;
 
 	private static final GridLayout LAYOUT = new GridLayout(3, 3);
@@ -232,5 +233,10 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 	public void handleMoveCommand(int x, int y, int player) {
 		int position = coordToPos(x, y);
 		closeButton(position, player);
+	}
+
+	@Override
+	public void handleStartCommand() {
+		
 	}
 }

@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import base.handler.EndCommandHandler;
 import base.handler.ErrorCommandHandler;
 import base.handler.MoveCommandHandler;
+import base.handler.StartCommandHandler;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
@@ -40,11 +41,17 @@ public class TicTacToeRecieveInterface {
 	public static final Pattern END_COMMAND = Pattern
 			.compile("END[\\s]+(?<status>[\\d]+)[\\s]+(?<player>[\\d]+)");
 
+	/**
+	 * The regex pattern for teh start command
+	 */
+	public static final Pattern START_COMMAND = Pattern.compile("START");
+
 	private Socket socket;
 	private InputStreamReader reader;
 	private MoveCommandHandler moveHandler;
 	private ErrorCommandHandler errorHandler;
 	private EndCommandHandler endHandler;
+	private StartCommandHandler startHandler;
 
 	/**
 	 * 
@@ -59,6 +66,7 @@ public class TicTacToeRecieveInterface {
 		this.moveHandler = null;
 		this.errorHandler = null;
 		this.endHandler = null;
+		this.startHandler = null;
 	}
 
 	/**
@@ -92,6 +100,17 @@ public class TicTacToeRecieveInterface {
 	 */
 	public void registerEndCommandHandler(EndCommandHandler handler) {
 		this.endHandler = handler;
+	}
+
+	/**
+	 * Registers a start command handler to receive call backs when a start
+	 * command is received
+	 * 
+	 * @param handler
+	 *            the class that implements the interface
+	 */
+	public void registerStartCommandHandler(StartCommandHandler handler) {
+		this.startHandler = handler;
 	}
 
 	/**
@@ -169,6 +188,14 @@ public class TicTacToeRecieveInterface {
 				int player = Integer.parseInt(matcher.group("player"));
 
 				this.endHandler.handleEndCommand(status, player);
+				return;
+			}
+
+			matcher = START_COMMAND.matcher(command);
+			if (matcher.matches()) {
+				System.out.println("Start Command Recieved");
+
+				this.startHandler.handleStartCommand();
 				return;
 			}
 
