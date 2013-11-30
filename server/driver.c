@@ -66,16 +66,16 @@ void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 	int i;
 	for (i = 0; i < gameserver->player_size; i++)
 	{
-		int player_id = gameserver->players[i].player_id;
+		player_soc_t *player = &gameserver->players[i];
 
 		//See if the index exists if it doesn't create it
-		if (index_get_index(file, player_id) == -1)
+		if (index_get_index(file, player->player_id) == -1)
 		{
 			//Create the record
 			player_record_t record;
 
-			//TODO have user tell us who he is
-			player_rec_init(&record, player_id, "Joe", "Smith");
+			//Init the player record
+			player_rec_init(&record, player->player_id, player->first_name, player->last_name);
 
 			//Set the number of ties to 1
 			record.ties = 1;
@@ -84,7 +84,7 @@ void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 			print_player_record(&record);
 
 			//Add the record to the database
-			index_add(file, player_id, &record);
+			index_add(file, player->player_id, &record);
 		}
 		else
 		{
@@ -92,7 +92,7 @@ void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 			player_record_t record;
 
 			//Load the record from the database to the buffer
-			index_get_data(file, player_id, &record);
+			index_get_data(file, player->player_id, &record);
 
 			//Increment the ties variable
 			record.ties++;
@@ -101,7 +101,7 @@ void save_draw(gameserver_t *gameserver, indexed_file_t *file)
 			print_player_record(&record);
 
 			//Save it back to the database
-			index_update(file, player_id, &record);
+			index_update(file, player->player_id, &record);
 		}
 	}
 }
@@ -111,19 +111,19 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 	int i;
 	for (i = 0; i < gameserver->player_size; i++)
 	{
-		int player_id = gameserver->players[i].player_id;
+		player_soc_t *player = &gameserver->players[i];
 
 		//See if the current player is a winner
 		if (gameserver->players[i].player == winner)
 		{
 			//See if the index exists if it doesn't create it
-			if (index_get_index(file, player_id) == -1)
+			if (index_get_index(file, player->player_id) == -1)
 			{
 				//Create the record
 				player_record_t record;
 
-				//TODO have user tell us who he is
-				player_rec_init(&record, player_id, "Joe", "Smith");
+				//Save the player record
+				player_rec_init(&record, player->player_id, player->first_name, player->last_name);
 
 				//Set the number of ties to 1
 				record.wins = 1;
@@ -132,7 +132,7 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				print_player_record(&record);
 
 				//Add the record to the database
-				index_add(file, player_id, &record);
+				index_add(file, player->player_id, &record);
 			}
 			else
 			{
@@ -140,7 +140,7 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				player_record_t record;
 
 				//Load the record from the database to the buffer
-				index_get_data(file, player_id, &record);
+				index_get_data(file, player->player_id, &record);
 
 				//Increment the ties variable
 				record.wins++;
@@ -149,19 +149,19 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				print_player_record(&record);
 
 				//Save it back to the database
-				index_update(file, player_id, &record);
+				index_update(file, player->player_id, &record);
 			}
 		}
 		else
 		{
 			//See if the index exists if it doesn't create it
-			if (index_get_index(file, player_id) == -1)
+			if (index_get_index(file, player->player_id) == -1)
 			{
 				//Create the record
 				player_record_t record;
 
 				//TODO have user tell us who he is
-				player_rec_init(&record, player_id, "Joe", "Smith");
+				player_rec_init(&record, player->player_id, player->first_name, player->last_name);
 
 				//Set the number of ties to 1
 				record.losses = 1;
@@ -170,7 +170,7 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				print_player_record(&record);
 
 				//Add the record to the database
-				index_add(file, player_id, &record);
+				index_add(file, player->player_id, &record);
 			}
 			else
 			{
@@ -178,7 +178,7 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				player_record_t record;
 
 				//Load the record from the database to the buffer
-				index_get_data(file, player_id, &record);
+				index_get_data(file, player->player_id, &record);
 
 				//Increment the ties variable
 				record.losses++;
@@ -187,7 +187,7 @@ void save_winner(gameserver_t *gameserver, indexed_file_t *file, player_t winner
 				print_player_record(&record);
 
 				//Save it back to the database
-				index_update(file, player_id, &record);
+				index_update(file, player->player_id, &record);
 			}
 		}
 	}
