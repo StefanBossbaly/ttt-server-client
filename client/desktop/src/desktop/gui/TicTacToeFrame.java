@@ -237,6 +237,7 @@ public class TicTacToeFrame extends JFrame implements MoveCommandHandler,
 
 	@Override
 	public void handleStartCommand() {
-		
+		//Send the server our id information
+		sendInterface.sendIdCommand(1, "Stefan", "Bossbaly");
 	}
 }
