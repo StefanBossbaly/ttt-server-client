@@ -46,4 +46,23 @@ public class TicTacToeSendInterface {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Sends the id command to the server
+	 * 
+	 * @param firstName
+	 *            the first name of the player
+	 * @param lastName
+	 *            the last name of the player
+	 */
+	public void sendIdCommand(int playerId, String firstName, String lastName) {
+		try {
+			String idCommand = "ID " + playerId + " " + firstName + " "
+					+ lastName + "\0";
+			writer.write(idCommand);
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

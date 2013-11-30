@@ -3,6 +3,7 @@
 
 #include "game.h"
 #include "subserver.h"
+#include "player_record.h"
 
 #define ROWS 3
 #define COLUMNS 3
@@ -14,6 +15,8 @@ typedef struct
 	int socket_id;
 	int player_id;
 	player_t player;
+	char first_name[FIRST_NAME_MAX];
+	char last_name[LAST_NAME_MAX];
 } player_soc_t;
 
 typedef struct

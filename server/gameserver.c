@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "gameserver.h"
 #include "game.h"
+#include "player_record.h"
 
 //Helper functions
 
@@ -206,8 +208,21 @@ int gameserver_handle_recieve(void *data, int socket_id, char *buffer, size_t si
 	gameserver_t *gameserver = (gameserver_t *) data;
 
 	int x = 0, y = 0;
+	char first_name[FIRST_NAME_MAX];
+	char last_name[LAST_NAME_MAX];
 
-	if (sscanf(buffer, "MOVE %i %i", &x, &y))
+	if (sscanf(buffer, "ID %i %s %s", &x, first_name, last_name))
+	{
+		//Get the calling player
+		player_soc_t *player = gameserver_get_player(gameserver, socket_id);
+
+		player->player_id = x;
+		strcpy(player->first_name, first_name);
+		strcpy(player->last_name, last_name);
+
+		return 0;
+	}
+	else if (sscanf(buffer, "MOVE %i %i", &x, &y))
 	{
 		printf("MOVE COMMAND x = %i and y = %i\n", x, y);
 
