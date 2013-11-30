@@ -19,6 +19,34 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_port_display_name" />
+    
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_player_id"
+        android:inputType="number"
+        android:key="player_id"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_player_id_display_name" />
+    
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_first_name"
+        android:inputType="text"
+        android:key="first_name"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_first_name_display_name" />
+    
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_last_name"
+        android:inputType="text"
+        android:key="last_name"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_last_name_display_name" />
+    
 
     <!--
          NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to

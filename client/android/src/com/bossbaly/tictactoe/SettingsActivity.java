@@ -67,6 +67,9 @@ public class SettingsActivity extends PreferenceActivity {
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference("host"));
 		bindPreferenceSummaryToValue(findPreference("port"));
+		bindPreferenceSummaryToValue(findPreference("player_id"));
+		bindPreferenceSummaryToValue(findPreference("first_name"));
+		bindPreferenceSummaryToValue(findPreference("last_name"));
 	}
 
 	/** {@inheritDoc} */
@@ -158,6 +161,9 @@ public class SettingsActivity extends PreferenceActivity {
 			// guidelines.
 			bindPreferenceSummaryToValue(findPreference("host"));
 			bindPreferenceSummaryToValue(findPreference("port"));
+			bindPreferenceSummaryToValue(findPreference("player_id"));
+			bindPreferenceSummaryToValue(findPreference("first_name"));
+			bindPreferenceSummaryToValue(findPreference("last_name"));
 		}
 	}
 }

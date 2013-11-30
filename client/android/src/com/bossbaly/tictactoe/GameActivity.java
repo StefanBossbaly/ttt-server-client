@@ -22,7 +22,8 @@ import base.serverinterface.TicTacToeSendInterface;
 import base.thread.TicTacToeRecieveThread;
 
 public class GameActivity extends Activity implements OnClickListener,
-		MoveCommandHandler, ErrorCommandHandler, EndCommandHandler, StartCommandHandler {
+		MoveCommandHandler, ErrorCommandHandler, EndCommandHandler,
+		StartCommandHandler {
 
 	private Button button[] = new Button[9];
 
@@ -36,8 +37,10 @@ public class GameActivity extends Activity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
 		final String host = prefs.getString("host", "localhost");
 		final int port = Integer.parseInt(prefs.getString("port", "32600"));
 
@@ -45,7 +48,7 @@ public class GameActivity extends Activity implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					
+
 					socket = new Socket(host, port);
 					sendInterface = new TicTacToeSendInterface(socket);
 					recieveThread = new TicTacToeRecieveThread(socket,
@@ -206,7 +209,20 @@ public class GameActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void handleStartCommand() {
-		// TODO Auto-generated method stub
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		final int playerID = Integer
+				.parseInt(prefs.getString("player_id", "0"));
+		final String firstName = prefs.getString("first_name", "Joe");
+		final String lastName = prefs.getString("last_name", "Smith");
 		
+		Thread send = new Thread() {
+			@Override
+			public void run() {
+				sendInterface.sendIdCommand(playerID, firstName, lastName);
+			}
+		};
+
+		send.start();
 	}
 }
