@@ -58,7 +58,7 @@ void print_player_record(player_record_t *record)
 {
 	printf("Record ID: %i\n", record->player_id);
 	printf("Record Name: %s %s\n", record->first_name, record->last_name);
-	printf("Recoard Stats %i-%i-%i\n", record->wins, record->ties, record->losses);
+	printf("Record Stats %i-%i-%i\n", record->wins, record->ties, record->losses);
 }
 
 void save_draw(gameserver_t *gameserver, indexed_file_t *file)
